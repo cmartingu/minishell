@@ -15,13 +15,11 @@
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sol;
-	size_t	i;
 
 	if (ft_strlen(s) <= start)
 		return (ft_strdup(""));
 	if (ft_strlen(s + start) < len)
 		len = ft_strlen(s + start);
-	i = 0;
 	sol = malloc(len + 1);
 	if (!sol)
 		return (0);
