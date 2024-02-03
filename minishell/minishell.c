@@ -14,8 +14,8 @@ int main(void)
 		comando = readline("minishell>");
 		if (comando && *comando)
         	add_history(comando);
-		if (ft_strncmp(comando, "history -c", 10) == 0)
-			rl_clear_history();
+		if (ft_strncmp(comando, "history -c", ft_strlen(comando)) == 0)
+			clear_history();
 		else if (ft_strncmp(comando, "exit", 4) == 0)
 		{
 			printf("exit\n");
