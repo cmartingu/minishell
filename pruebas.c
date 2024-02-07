@@ -29,6 +29,46 @@ void ctrl_bar_handler(int sig) {
 	return;
 }
 
+int token_quant(char *cmd)
+{
+	int		i;
+	int		quant;
+
+	quant = 0;
+	i = 0;
+	while(cmd[i] != '\0')
+	{
+		while(cmd[i] == ' ')
+			i++;
+		if (cmd[i] != '\0' && cmd[i] != '|' && cmd[i] != '<' && cmd[i] != '>')
+			quant++;
+		while(cmd[i] != ' ' && cmd[i] != '\0')
+		{
+			if ((cmd[i] == '<' && cmd[i + 1] == '<') || (cmd[i] == '>' && cmd[i + 1] == '>'))
+			{
+				quant++;
+				i++;
+				i++;
+				if (cmd[i] != ' ' && cmd[i] != '\0' && cmd[i] != '|' && cmd[i] != '<' && cmd[i] != '>')
+					quant++;
+			}
+			else if (cmd[i] == '|' || cmd[i] == '<' || cmd[i] == '>')
+			{
+				quant++;
+				i++;
+				if (cmd[i] != ' ' && cmd[i] != '\0' && cmd[i] != '|' && cmd[i] != '<' && cmd[i] != '>')
+				{
+					quant++;
+					i++;
+				}
+			}
+			else
+				i++;
+		}
+	}
+	return (quant);
+}
+
 int main(void)
 {
 	char	*comando;
