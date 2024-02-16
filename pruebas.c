@@ -18,6 +18,20 @@
 //ESTE PARA CARLOS: cc minishell.c -o minishell -L/Users/carlos-m/.brew/opt/readline/lib -I/Users/carlos-m/.brew/opt/readline/include -lreadline
 // Readline y History    extern void rl_replace_line (const char *, int);
 
+typedef struct			s_fileobject
+{
+    char				*filename;
+    struct t_fileobject	*next;
+}						t_fileobject;
+
+typedef struct			s_process
+{
+	char				**command;
+    t_fileobject		*infile;
+    t_fileobject		*outfile;
+    struct t_process	next;
+}						t_process;
+
 
 void ctrl_C_handler(int sig) {
 	printf("\n");
@@ -148,13 +162,81 @@ char	**save_tokens(int tam, char **cmd)
 	return (tokens);
 }
 
+int	pipes_quant(char **tokens)
+{
+	int		pipes;
+	int		i;
+
+	i = 0;
+	pipes = 0;
+	while (tokens[i] != NULL)
+	{
+		if (*(tokens[i]) == '|')
+			pipes++;
+		i++;
+	}
+	return (pipes);
+}
+
+int	tokens_in_pipe(char **tokens)
+{
+	int	i;
+
+	i = 0;
+	while (*(tokens[i]) != '|' && *(tokens[i]) != NULL)
+		i++;
+	return (i);
+}
+
+char	**final_cmd(char **tokens)
+{
+	int		i;
+	char	**comand;
+
+	i = tokens_in_pipe(tokens);
+	comand = malloc((i + 1) * sizeof(char *));
+}
+
+char	**get_comand(char **tokens, int cmd_nb)
+{
+	int		i;
+	char	**comand;
+
+	i = 0;
+	while (tokens[i] != NULL)
+	{
+		if (cmd_nb == 0) //Es el comando que quiero hasta el siguiente pipe. Quiero ver si acaba o si hay otro pipe o si es el último
+		{ //Ahora tengo que contar de el número de tokens que hay dentro del pipe, hacer un malloc del tamaño y guardarlos y luego ya ver que hago con cada cosa
+			
+		}
+		if (*(tokens[i]) == '|')
+			cmd_nb--;
+		i++;
+	}
+	return (NULL);
+}
+
 void	tokenization_string(char *cmd)
 {
 	char    **tokens;
 	int		tam;
+	int		forks;
+	int		child;
 
 	tam = token_quant(cmd);
 	tokens = save_tokens(tam, &cmd);
+	forks = pipes_quant(tokens) + 1;
+	while (forks > 0)
+	{
+		child = fork();
+		if (child == 0)
+		{
+			printf("Child %d\n", forks);
+			exit(0);
+		}
+		forks--;
+		wait(NULL);
+	}
 }
 
 int main(void)
@@ -189,7 +271,6 @@ int main(void)
 		comando = readline("minishell>");
 		if (!comando)
 			exit(EXIT_SUCCESS);
-
 		if (*comando)
 		{
 			add_history(comando);
