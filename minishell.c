@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: carlos-m <carlos-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/20 12:19:42 by carlos-m          #+#    #+#             */
+/*   Updated: 2024/02/20 12:19:43 by carlos-m         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	pipes_quant(char **tokens)
@@ -29,9 +41,9 @@ void	add_infile(t_process *proceso, char *inf)
 	}
 	new_file->filename = ft_strdup(inf);
 	new_file->next = NULL;
-	if(!(proceso->infile))
+	if (!(proceso->infile))
 		proceso->infile = new_file;
-	else//Ya hay un infile, hay que añadirlo al final
+	else
 	{
 		aux_file = proceso->infile;
 		while (aux_file->next != NULL)
@@ -53,9 +65,9 @@ void	add_outfile(t_process *proceso, char *outf)
 	}
 	new_file->filename = ft_strdup(outf);
 	new_file->next = NULL;
-	if(!(proceso->outfile))
+	if (!(proceso->outfile))
 		proceso->outfile = new_file;
-	else//Ya hay un outfile, hay que añadirlo al final
+	else
 	{
 		aux_file = proceso->outfile;
 		while (aux_file->next != NULL)
@@ -64,37 +76,91 @@ void	add_outfile(t_process *proceso, char *outf)
 	}
 }
 
-t_process	*procesos(int nb, char **tokens)
+void	free_arr(char **arr)
 {
 	int	i;
+
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
+char **ft_realloc_doble(char **cmd, char *str, int tam)
+{
+	char	**final_cmd;
+
+	final_cmd = malloc((tam + 1) * sizeof(char *));
+	if (!final_cmd)
+	{
+		printf("Error, malloc error");
+		exit(1);
+	}
+	final_cmd[tam] = NULL;
+	final_cmd[tam - 1] = ft_strdup(str);
+	tam--;
+	while (tam--)
+		final_cmd[tam] = ft_strdup(cmd[tam]);
+	free_arr(cmd);
+	return (final_cmd);
+}
+
+void	add_cmd(t_process *proceso, char *cmd)
+{
+	if (!(proceso->command))
+	{
+		proceso->command = malloc(2 * sizeof(char *));
+		if (!(proceso->command))
+		{
+			printf("Error, malloc error");
+			exit(1);
+		}
+		(proceso->command)[0] = ft_strdup(cmd);
+		(proceso->command)[1] = NULL;
+	}
+	else//Ya hay comando, hay que guardarlo a continuacion
+	{
+	}
+}
+
+t_process	*procesos(int nb, char **tokens)
+{
 	t_process	*proceso;
+	int			i;
+	int			cmd_quant;
 
 	i = -1;
-	while(nb--)
+	while (nb--)
 	{
 		i++;
+		cmd_quant = 0;
 		proceso = malloc(sizeof(t_process));
-		while(tokens[i] != NULL && *(tokens[i]) != '|')
+		while (tokens[i] != NULL && *(tokens[i]) != '|')
 		{
-			if (ft_strncmp(tokens[i], "<", ft_strlen(tokens[i])) == 0)//Lo siguiente es infile
+			if (ft_strncmp(tokens[i], "<", ft_strlen(tokens[i])) == 0)
 			{
 				i++;
 				if (*(tokens[i]) != '<' && *(tokens[i]) != '>' && *(tokens[i]) != '|')
 					add_infile(proceso, tokens[i]);
 			}
-			if (ft_strncmp(tokens[i], ">", ft_strlen(tokens[i])) == 0)//Lo siguiente es outfile
+			if (ft_strncmp(tokens[i], ">", ft_strlen(tokens[i])) == 0)
 			{
 				i++;
 				if (*(tokens[i]) != '<' && *(tokens[i]) != '>' && *(tokens[i]) != '|')
 					add_outfile(proceso, tokens[i]);
 			}
-			else//Lo que hay aqui es comando
+			else
 			{
+				cmd_quant++;
+				add_cmd(proceso, tokens[i]);
 			}
 			i++;
 		}
 	}
-	printf("Infiles\n\n");
+	/*printf("Infiles\n\n");
 	while (proceso->infile)
 	{
 		printf("%s\n", proceso->infile->filename);
@@ -105,7 +171,7 @@ t_process	*procesos(int nb, char **tokens)
 	{
 		printf("%s\n", proceso->outfile->filename);
 		proceso->outfile = proceso->outfile->next;
-	}
+	}*/
 	return (NULL);
 }
 
@@ -114,22 +180,11 @@ void	tokenization_string(char *cmd)
 	char    **tokens;
 	int		tam;
 	int		forks;
-	int		child;
 
 	tam = token_quant(cmd);
 	tokens = save_tokens(tam, &cmd);
-	forks = pipes_quant(tokens) + 1; //Aqui ya tengo la cantidad de forks que hay que hacer, es decir la cantidad de estructuras que hay que crear
+	forks = pipes_quant(tokens) + 1;
 	procesos(forks, tokens);
-	while (forks > 0)
-	{
-		child = fork();
-		if (child == 0)
-		{
-			exit(0);
-		}
-		forks--;
-		wait(NULL);
-	}
 }
 
 int main(void)
@@ -148,7 +203,7 @@ int main(void)
 	// Aplicar la nueva configuración
 	//tcsetattr(STDIN_FILENO, TCSANOW, &termios_p);
 
-	/*if (signal(SIGINT, ctrl_C_handler) == SIG_ERR) {
+	/*if (signal(SIGINT, ctrl_c_handler) == SIG_ERR) {
 		printf("Error al establecer el manejador de SIGINT\n");
 		tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
 		return EXIT_FAILURE;
@@ -174,7 +229,8 @@ int main(void)
 				//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
 				exit(0);
 			}
-			tokenization_string(comando);
+			else
+				tokenization_string(comando);
 		}
 	}
 	//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
