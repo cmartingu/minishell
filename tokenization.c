@@ -12,14 +12,29 @@
 
 #include "minishell.h"
 
+void	count_quotation(char **cmd, int *i)
+{
+	(*i)++;
+	while ((*cmd)[*i] != '"')
+		(*i)++;
+	(*i)++;
+}
+
 void	quant_aux(char **cmd, int *quant, int *i)
 {
-	if (((*cmd)[*i] == '<' && (*cmd)[(*i) + 1] == '<') || \
+	if ((*cmd)[*i] == '"')
+		count_quotation(cmd, &*i);
+	else if (((*cmd)[*i] == '<' && (*cmd)[(*i) + 1] == '<') || \
 	((*cmd)[(*i)] == '>' && (*cmd)[(*i) + 1] == '>'))
 	{
 		(*quant)++;
 		(*i)++;
 		(*i)++;
+		if ((*cmd)[*i] == '"')
+		{
+			(*quant)++;
+			return ;
+		}
 		if ((*cmd)[*i] != ' ' && (*cmd)[*i] != '\0' && \
 		(*cmd)[*i] != '|' && (*cmd)[*i] != '<' && (*cmd)[*i] != '>')
 			(*quant)++;
@@ -28,7 +43,12 @@ void	quant_aux(char **cmd, int *quant, int *i)
 	{
 		(*quant)++;
 		(*i)++;
-		if ((*cmd)[*i] != ' ' && (*cmd)[*i] != '\0' && (*cmd)[*i] != '|' \
+		if ((*cmd)[*i] == '"')
+		{
+			(*quant)++;
+			return ;
+		}
+		if ((*cmd)[*i] != '\0' && (*cmd)[*i] != ' ' && (*cmd)[*i] != '|' \
 		&& (*cmd)[*i] != '<' && (*cmd)[*i] != '>')
 		{
 			(*quant)++;
@@ -52,8 +72,18 @@ int	token_quant(char *cmd)
 			i++;
 		if (cmd[i] != '\0' && cmd[i] != '|' && cmd[i] != '<' && cmd[i] != '>')
 			quant++;
-		while (cmd[i] != ' ' && cmd[i] != '\0')
-			quant_aux(&cmd, &quant, &i);
+		if (cmd[i] == '"')
+		{
+			i++;
+			while (cmd[i] != '"')
+				i++;
+			i++;
+		}
+		else
+		{
+			while (cmd[i] != ' ' && cmd[i] != '\0')
+				quant_aux(&cmd, &quant, &i);
+		}
 	}
 	return (quant);
 }
@@ -70,14 +100,16 @@ char	*save_word_case(char **cmd)
 		(*cmd)++;
 		return (strdup("|"));
 	}
-	while ((*cmd)[i] != '<' && (*cmd)[i] != '>' && (*cmd)[i] != '|' && \
-	(*cmd)[i] != ' ' && (*cmd)[i] != '\0')
-		i++;
-	if (i == 0)
-		return (NULL);
+	while ((*cmd)[i] != '\0' && (*cmd)[i] != ' ' && (*cmd)[i] != '|' && (*cmd)[i] != '<' && (*cmd)[i] != '>')
+	{
+		if ((*cmd)[i] == '"')
+			count_quotation(cmd, &i);
+		else
+			i++;
+	}
+	skip_tam = i;
 	aux_tkn = malloc(i + 1);
 	aux_tkn[i] = '\0';
-	skip_tam = i;
 	while (i--)
 		aux_tkn[i] = (*cmd)[i];
 	while (skip_tam-- > 0)
