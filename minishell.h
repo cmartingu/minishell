@@ -54,6 +54,13 @@ int			token_quant(char *cmd);
 void		quant_aux(char **cmd, int *quant, int *i);
 void		ctrl_C_handler(int sig);
 void		ctrl_bar_handler(int sig);
+void		add_process_back(t_process *proceso, t_process *proceso2);
+void		ft_realloc_doble(t_process *proceso, char *str, int tam);
+int			pipes_quant(char **tokens);
+void		add_infile(t_process *proceso, char *inf);
+void		add_outfile(t_process *proceso, char *outf);
+void		free_arr(char ***arr);
+void		add_cmd(t_process *proceso, char *cmd, int cmd_quant);
 extern void	rl_clear_history(void);
 extern void	rl_replace_line(const char *b, int s);
 
