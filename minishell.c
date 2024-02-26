@@ -96,10 +96,13 @@ t_process	*procesos(int nb, char **tokens)
 
 void	tokenization_string(char *cmd)
 {
-	char    	**tokens;
 	t_process	*process;
-	int			tam;
-	int			forks;
+	t_process	*aux_process;
+	t_fileobject	*aux_file;
+	char		**aux_cmd
+	char    	**tokens;
+	int		tam;
+	int		forks;
 
 	if (contador_comillas(cmd) == -1)
 	{
@@ -111,6 +114,30 @@ void	tokenization_string(char *cmd)
 	forks = pipes_quant(tokens) + 1;
 	process = procesos(forks, tokens);
 	delete_quotation(process->command);
+	aux_process = process;
+	while (aux_process != NULL)
+	{
+		aux_file = aux_process->infile;
+		while (aux_file != NULL)
+		{
+			(aux_file->filename) = delete_quotation(&(aux_file->filename));
+			aux_file = aux_file->next;
+		}
+		aux_file = aux_process->outfile;
+		while (aux_file != NULL)
+		{
+			(aux_file->filename) = delete_quotation(&(aux_file->filename));
+			aux_file = aux_file->next;
+		}
+		aux_command = aux_process->command;
+		if (aux_command)
+			while ((*aux_command) != NULL)
+			{
+				(*aux_command) = delete_quotation(aux_command);
+				aux_command++;
+			}
+		aux_process = aux_process->next;
+	}
 }
 
 int main(void)
