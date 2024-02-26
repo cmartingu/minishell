@@ -12,24 +12,39 @@
 
 #include "minishell.h"
 
+int	end_quotation(char **cmd, char quot)
+{
+	(*cmd)++;
+	while ((**cmd) != '\0' && (**cmd) != quot)
+		(*cmd)++;
+	if ((**cmd) == quot)
+		return (0);
+	return (-1);
+}
+
 int	contador_comillas(char  *comando)
 {
-	int	i;
-	int	cont;
+	char	*aux_cmd;
 
 	if (!comando)
 		return(-1);
-	i = 0;
-	cont = 0;
-	while (comando[i] != '\0')
+	aux_cmd = comando;
+	while (*comando != '\0')
 	{
-		if (comando[i] == '"')
-			cont++;
-		i++;
+		if (*comando == '"')
+		{
+			if (end_quotation(&comando, '"') == -1)
+				return (-1);
+		}
+		else if (*comando == '\'')
+		{
+			if (end_quotation(&comando, '\'') == -1)
+				return (-1);
+		}
+		comando++;
 	}
-	if (cont == 0 || cont % 2 == 0)
-		return(0);
-	return(-1);
+	comando = aux_cmd;
+	return(0);
 }
 
 void	process_creation(t_process *proceso, char **tokens, int *i, int *cmd_quant)
@@ -82,7 +97,7 @@ t_process	*procesos(int nb, char **tokens)
 void	tokenization_string(char *cmd)
 {
 	char    	**tokens;
-	t_process	*proceso;
+	t_process	*process;
 	int			tam;
 	int			forks;
 
@@ -94,31 +109,8 @@ void	tokenization_string(char *cmd)
 	tam = token_quant(cmd);
 	tokens = save_tokens(tam, &cmd);
 	forks = pipes_quant(tokens) + 1;
-	proceso = procesos(forks, tokens);
-	/*while (proceso != NULL)
-	{
-		i = 0;
-		printf("\n\n");
-		printf("Infiles:\n");
-		while (proceso->infile)
-		{
-			printf("%s\n", proceso->infile->filename);
-			proceso->infile = proceso->infile->next;
-		}
-		printf("Outfiles:\n");
-		while (proceso->outfile)
-		{
-			printf("%s\n", proceso->outfile->filename);
-			proceso->outfile = proceso->outfile->next;
-		}
-		printf("Comando:\n");
-		while ((proceso->command)[i] != '\0')
-		{
-			printf("%s\n", (proceso->command)[i]);
-			i++;
-		}
-		proceso = proceso->next;
-	}*/
+	process = procesos(forks, tokens);
+	delete_quotation(process->command);
 }
 
 int main(void)

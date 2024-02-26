@@ -12,48 +12,53 @@
 
 #include "minishell.h"
 
-void	count_quotation(char **cmd, int *i)
+void	count_quotation(char **cmd, int *i, char quot)
 {
 	(*i)++;
-	while ((*cmd)[*i] != '"')
+	while ((*cmd)[*i] != quot)
 		(*i)++;
 	(*i)++;
+}
+
+void	char_exc(char **cmd, int *quant, int *i)
+{
+	if ((*cmd)[*i] != ' ' && (*cmd)[*i] != '\0' && \
+	(*cmd)[*i] != '|' && (*cmd)[*i] != '<' && (*cmd)[*i] != '>')
+	{
+		(*quant)++;
+		(*i)++;
+	}
 }
 
 void	quant_aux(char **cmd, int *quant, int *i)
 {
 	if ((*cmd)[*i] == '"')
-		count_quotation(cmd, &*i);
+		count_quotation(cmd, i, '"');
+	else if ((*cmd)[*i] == '\'')
+		count_quotation(cmd, i, '\'');
 	else if (((*cmd)[*i] == '<' && (*cmd)[(*i) + 1] == '<') || \
 	((*cmd)[(*i)] == '>' && (*cmd)[(*i) + 1] == '>'))
 	{
 		(*quant)++;
 		(*i)++;
 		(*i)++;
-		if ((*cmd)[*i] == '"')
+		if ((*cmd)[*i] == '"' || (*cmd)[*i] == '\'')
 		{
 			(*quant)++;
 			return ;
 		}
-		if ((*cmd)[*i] != ' ' && (*cmd)[*i] != '\0' && \
-		(*cmd)[*i] != '|' && (*cmd)[*i] != '<' && (*cmd)[*i] != '>')
-			(*quant)++;
+		char_exc(cmd, quant, i);
 	}
 	else if ((*cmd)[*i] == '|' || (*cmd)[*i] == '<' || (*cmd)[*i] == '>')
 	{
 		(*quant)++;
 		(*i)++;
-		if ((*cmd)[*i] == '"')
+		if ((*cmd)[*i] == '"' || (*cmd)[*i] == '\'')
 		{
 			(*quant)++;
 			return ;
 		}
-		if ((*cmd)[*i] != '\0' && (*cmd)[*i] != ' ' && (*cmd)[*i] != '|' \
-		&& (*cmd)[*i] != '<' && (*cmd)[*i] != '>')
-		{
-			(*quant)++;
-			(*i)++;
-		}
+		char_exc(cmd, quant, i);
 	}
 	else
 		(*i)++;
@@ -76,6 +81,13 @@ int	token_quant(char *cmd)
 		{
 			i++;
 			while (cmd[i] != '"')
+				i++;
+			i++;
+		}
+		else if (cmd[i] == '\'')
+		{
+			i++;
+			while (cmd[i] != '\'')
 				i++;
 			i++;
 		}
@@ -103,7 +115,9 @@ char	*save_word_case(char **cmd)
 	while ((*cmd)[i] != '\0' && (*cmd)[i] != ' ' && (*cmd)[i] != '|' && (*cmd)[i] != '<' && (*cmd)[i] != '>')
 	{
 		if ((*cmd)[i] == '"')
-			count_quotation(cmd, &i);
+			count_quotation(cmd, &i, '"');
+		else if ((*cmd)[i] == '\'')
+			count_quotation(cmd, &i, '\'');
 		else
 			i++;
 	}

@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = minishell
-SRC = ctrl_handlers.c funciones_lib.c minishell.c tokenization.c
+SRC = ctrl_handlers.c funciones_lib.c minishell.c tokenization.c tokenization2.c delete_quot.c
 OBJ = $(SRC:.c=.o)
 CFLAGS := -Wall -Werror -Wextra
 LDFLAGS := -L/Users/carlos-m/.brew/opt/readline/lib
