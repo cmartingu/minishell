@@ -56,6 +56,35 @@ int	no_quot_tam(char *cmd)
 	return (i - quant);
 }
 
+void	command_quot(char *cmd, char **aux, int *i, int *j)
+{
+	if (cmd[*i] == '"')
+	{
+		(*i)++;
+		while (cmd[*i] != '"')
+		{
+			(*aux)[*j] = cmd[*i];
+			(*i)++;
+			(*j)++;
+		}
+	}
+	else if (cmd[*i] == '\'')
+	{
+		(*i)++;
+		while (cmd[*i] != '\'')
+		{
+			(*aux)[*j] = cmd[*i];
+			(*i)++;
+			(*j)++;
+		}
+	}
+	else
+	{
+		(*aux)[*j] = cmd[*i];
+		(*j)++;
+	}
+}
+
 char	*final_command(char *cmd, int tam)
 {
 	char	*aux;
@@ -73,49 +102,8 @@ char	*final_command(char *cmd, int tam)
 	j = 0;
 	while (cmd[i] != '\0')
 	{
-		if (cmd[i] == '"')
-		{
-			i++;
-			while (cmd[i] != '"')
-			{
-				aux[j] = cmd[i];
-				i++;
-				j++;
-			}
-		}
-		else if (cmd[i] == '\'')
-		{
-			i++;
-			while (cmd[i] != '\'')
-			{
-				aux[j] = cmd[i];
-				i++;
-				j++;
-			}
-		}
-		else
-		{
-			aux[j] = cmd[i];
-			j++;
-		}
+		command_quot(cmd, &aux, &i, &j);
 		i++;
 	}
 	return (aux);
-}
-
-void	delete_quotation(char **cmd)
-{
-	char	*aux_cmd;
-	int		tam;
-
-	if (!cmd)
-		return ;
-	if (has_quot(*cmd) == -1)
-		return ;
-	printf("ORIGINAL: %s\n", *cmd);
-	tam = no_quot_tam(*cmd);
-	aux_cmd = final_command(*cmd, tam);
-	free(*cmd);
-	(*cmd) = aux_cmd;
-	printf("FINAL: %s\n", (*cmd));
 }

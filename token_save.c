@@ -12,115 +12,11 @@
 
 #include "minishell.h"
 
-void	count_quotation(char **cmd, int *i, char quot)
+char	*skip_places(int i, char **cmd)
 {
-	(*i)++;
-	while ((*cmd)[*i] != quot)
-		(*i)++;
-	(*i)++;
-}
-
-void	char_exc(char **cmd, int *quant, int *i)
-{
-	if ((*cmd)[*i] != ' ' && (*cmd)[*i] != '\0' && \
-	(*cmd)[*i] != '|' && (*cmd)[*i] != '<' && (*cmd)[*i] != '>')
-	{
-		(*quant)++;
-		(*i)++;
-	}
-}
-
-void	quant_aux(char **cmd, int *quant, int *i)
-{
-	if ((*cmd)[*i] == '"')
-		count_quotation(cmd, i, '"');
-	else if ((*cmd)[*i] == '\'')
-		count_quotation(cmd, i, '\'');
-	else if (((*cmd)[*i] == '<' && (*cmd)[(*i) + 1] == '<') || \
-	((*cmd)[(*i)] == '>' && (*cmd)[(*i) + 1] == '>'))
-	{
-		(*quant)++;
-		(*i)++;
-		(*i)++;
-		if ((*cmd)[*i] == '"' || (*cmd)[*i] == '\'')
-		{
-			(*quant)++;
-			return ;
-		}
-		char_exc(cmd, quant, i);
-	}
-	else if ((*cmd)[*i] == '|' || (*cmd)[*i] == '<' || (*cmd)[*i] == '>')
-	{
-		(*quant)++;
-		(*i)++;
-		if ((*cmd)[*i] == '"' || (*cmd)[*i] == '\'')
-		{
-			(*quant)++;
-			return ;
-		}
-		char_exc(cmd, quant, i);
-	}
-	else
-		(*i)++;
-}
-
-int	token_quant(char *cmd)
-{
-	int		i;
-	int		quant;
-
-	quant = 0;
-	i = 0;
-	while (cmd[i] != '\0')
-	{
-		while (cmd[i] == ' ')
-			i++;
-		if (cmd[i] != '\0' && cmd[i] != '|' && cmd[i] != '<' && cmd[i] != '>')
-			quant++;
-		if (cmd[i] == '"')
-		{
-			i++;
-			while (cmd[i] != '"')
-				i++;
-			i++;
-		}
-		else if (cmd[i] == '\'')
-		{
-			i++;
-			while (cmd[i] != '\'')
-				i++;
-			i++;
-		}
-		else
-		{
-			while (cmd[i] != ' ' && cmd[i] != '\0')
-				quant_aux(&cmd, &quant, &i);
-		}
-	}
-	return (quant);
-}
-
-char	*save_word_case(char **cmd)
-{
-	int		i;
 	char	*aux_tkn;
 	int		skip_tam;
 
-	i = 0;
-	if ((*cmd)[i] == '|')
-	{
-		(*cmd)++;
-		return (strdup("|"));
-	}
-	while ((*cmd)[i] != '\0' && (*cmd)[i] != ' ' && (*cmd)[i] != '|' && (*cmd)[i] != '<' && (*cmd)[i] != '>')
-	{
-		if ((*cmd)[i] == '"')
-			count_quotation(cmd, &i, '"');
-		else if ((*cmd)[i] == '\'')
-			count_quotation(cmd, &i, '\'');
-		else
-			i++;
-	}
 	skip_tam = i;
 	aux_tkn = malloc(i + 1);
 	aux_tkn[i] = '\0';
@@ -129,6 +25,29 @@ char	*save_word_case(char **cmd)
 	while (skip_tam-- > 0)
 		(*cmd)++;
 	return (aux_tkn);
+}
+
+char	*save_word_case(char **cmd)
+{
+	int		i;
+
+	i = 0;
+	if ((*cmd)[i] == '|')
+	{
+		(*cmd)++;
+		return (strdup("|"));
+	}
+	while ((*cmd)[i] != '\0' && (*cmd)[i] != ' ' && (*cmd)[i] != '|' && \
+	(*cmd)[i] != '<' && (*cmd)[i] != '>')
+	{
+		if ((*cmd)[i] == '"')
+			count_quotation(cmd, &i, '"');
+		else if ((*cmd)[i] == '\'')
+			count_quotation(cmd, &i, '\'');
+		else
+			i++;
+	}
+	return (skip_places(i, cmd));
 }
 
 char	*next_token(char **cmd)

@@ -12,117 +12,6 @@
 
 #include "minishell.h"
 
-int	end_quotation(char **cmd, char quot)
-{
-	(*cmd)++;
-	while ((**cmd) != '\0' && (**cmd) != quot)
-		(*cmd)++;
-	if ((**cmd) == quot)
-		return (0);
-	return (-1);
-}
-
-int	contador_comillas(char *comando)
-{
-	char	*aux_cmd;
-
-	if (!comando)
-		return (-1);
-	aux_cmd = comando;
-	while (*comando != '\0')
-	{
-		if (*comando == '"')
-		{
-			if (end_quotation(&comando, '"') == -1)
-				return (-1);
-		}
-		else if (*comando == '\'')
-		{
-			if (end_quotation(&comando, '\'') == -1)
-				return (-1);
-		}
-		comando++;
-	}
-	comando = aux_cmd;
-	return (0);
-}
-
-void	process_creation(t_process *proceso, char **tok, int *i, int *qua)
-{
-	if (ft_strncmp(tok[*i], "<", ft_strlen(tok[*i])) == 0)
-	{
-		(*i)++;
-		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
-			add_infile(proceso, tok[*i]);
-	}
-	else if (ft_strncmp(tok[*i], ">", ft_strlen(tok[*i])) == 0)
-	{
-		(*i)++;
-		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
-			add_outfile(proceso, tok[*i]);
-	}
-	else
-	{
-		(*qua)++;
-		add_cmd(proceso, tok[*i], *qua);
-	}
-	(*i)++;
-}
-
-t_process	*procesos(int nb, char **tokens)
-{
-	t_process	*proceso;
-	t_process	*proceso_aux;
-	int			i;
-	int			cmd_quant;
-
-	i = -1;
-	proceso_aux = malloc(sizeof(t_process));
-	proceso_aux->next = NULL;
-	while (nb--)
-	{
-		i++;
-		cmd_quant = 0;
-		proceso = malloc(sizeof(t_process));
-		proceso->next = NULL;
-		proceso->command = NULL;
-		proceso->infile = NULL;
-		proceso->outfile = NULL;
-		add_process_back(proceso_aux, proceso);
-		while (tokens[i] != NULL && *(tokens[i]) != '|')
-			process_creation(proceso, tokens, &i, &cmd_quant);
-	}
-	proceso = proceso_aux->next;
-	free(proceso_aux);
-	return (proceso);
-}
-
-void	delete_all_quot(t_process *process)
-{
-	t_fileobject	*aux_file;
-	char			**aux_command;
-
-	aux_file = process->infile;
-	while (aux_file != NULL)
-	{
-		delete_quotation(&(aux_file->filename));
-		aux_file = aux_file->next;
-	}
-	aux_file = process->outfile;
-	while (aux_file != NULL)
-	{
-		delete_quotation(&(aux_file->filename));
-		aux_file = aux_file->next;
-	}
-	aux_command = process->command;
-	if (aux_command)
-		while ((*aux_command) != NULL)
-		{
-			delete_quotation(aux_command);
-			aux_command++;
-		}
-}
-
 void	tokenization_string(char *cmd)
 {
 	t_process		*process;
@@ -148,7 +37,7 @@ void	tokenization_string(char *cmd)
 	}
 }
 
-int main(void)
+int	main(void)
 {
 	char	*comando;
 	//struct termios termios_p;

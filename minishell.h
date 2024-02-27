@@ -62,6 +62,9 @@ void		add_outfile(t_process *proceso, char *outf);
 void		free_arr(char ***arr);
 void		add_cmd(t_process *proceso, char *cmd, int cmd_quant);
 void		delete_quotation(char **cmd);
+void		count_quotation(char **cmd, int *i, char quot);
+void		create_process(t_process *proceso, char **tok, int *i, int *qua);
+t_process	*procesos(int nb, char **tokens);
 extern void	rl_clear_history(void);
 extern void	rl_replace_line(const char *b, int s);
 
