@@ -116,6 +116,6 @@ char	*delete_quotation(char **cmd)
 	}
 	tam = no_quot_tam(*cmd);
 	aux_cmd = final_command(*cmd, tam);
-	printf("FINAL STR: %s\n", aux_cmd);
+	free(*cmd);
 	return (NULL);
 }
