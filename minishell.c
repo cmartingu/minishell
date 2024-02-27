@@ -22,12 +22,12 @@ int	end_quotation(char **cmd, char quot)
 	return (-1);
 }
 
-int	contador_comillas(char  *comando)
+int	contador_comillas(char *comando)
 {
 	char	*aux_cmd;
 
 	if (!comando)
-		return(-1);
+		return (-1);
 	aux_cmd = comando;
 	while (*comando != '\0')
 	{
@@ -44,27 +44,27 @@ int	contador_comillas(char  *comando)
 		comando++;
 	}
 	comando = aux_cmd;
-	return(0);
+	return (0);
 }
 
-void	process_creation(t_process *proceso, char **tokens, int *i, int *cmd_quant)
+void	process_creation(t_process *proceso, char **tok, int *i, int *qua)
 {
-	if (ft_strncmp(tokens[*i], "<", ft_strlen(tokens[*i])) == 0)
+	if (ft_strncmp(tok[*i], "<", ft_strlen(tok[*i])) == 0)
 	{
 		(*i)++;
-		if (*(tokens[*i]) != '<' && *(tokens[*i]) != '>' && *(tokens[*i]) != '|')
-			add_infile(proceso, tokens[*i]);
+		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
+			add_infile(proceso, tok[*i]);
 	}
-	else if (ft_strncmp(tokens[*i], ">", ft_strlen(tokens[*i])) == 0)
+	else if (ft_strncmp(tok[*i], ">", ft_strlen(tok[*i])) == 0)
 	{
 		(*i)++;
-		if (*(tokens[*i]) != '<' && *(tokens[*i]) != '>' && *(tokens[*i]) != '|')
-			add_outfile(proceso, tokens[*i]);
+		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
+			add_outfile(proceso, tok[*i]);
 	}
 	else
 	{
-		(*cmd_quant)++;
-		add_cmd(proceso, tokens[*i], *cmd_quant);
+		(*qua)++;
+		add_cmd(proceso, tok[*i], *qua);
 	}
 	(*i)++;
 }
@@ -85,6 +85,7 @@ t_process	*procesos(int nb, char **tokens)
 		cmd_quant = 0;
 		proceso = malloc(sizeof(t_process));
 		proceso->next = NULL;
+		proceso->command = NULL;
 		add_process_back(proceso_aux, proceso);
 		while (tokens[i] != NULL && *(tokens[i]) != '|')
 			process_creation(proceso, tokens, &i, &cmd_quant);
@@ -94,15 +95,39 @@ t_process	*procesos(int nb, char **tokens)
 	return (proceso);
 }
 
+void	delete_all_quot(t_process *process)
+{
+	t_fileobject	*aux_file;
+	char			**aux_command;
+
+	aux_file = process->infile;
+	while (aux_file != NULL)
+	{
+		(aux_file->filename) = delete_quotation(&(aux_file->filename));
+		aux_file = aux_file->next;
+	}
+	aux_file = process->outfile;
+	while (aux_file != NULL)
+	{
+		(aux_file->filename) = delete_quotation(&(aux_file->filename));
+		aux_file = aux_file->next;
+	}
+	aux_command = process->command;
+	if (aux_command)
+		while ((*aux_command) != NULL)
+		{
+			(*aux_command) = delete_quotation(aux_command);
+			aux_command++;
+		}
+}
+
 void	tokenization_string(char *cmd)
 {
-	t_process	*process;
-	t_process	*aux_process;
-	t_fileobject	*aux_file;
-	char		**aux_cmd
-	char    	**tokens;
-	int		tam;
-	int		forks;
+	t_process		*process;
+	t_process		*aux_process;
+	char			**tokens;
+	int				tam;
+	int				forks;
 
 	if (contador_comillas(cmd) == -1)
 	{
@@ -113,29 +138,10 @@ void	tokenization_string(char *cmd)
 	tokens = save_tokens(tam, &cmd);
 	forks = pipes_quant(tokens) + 1;
 	process = procesos(forks, tokens);
-	delete_quotation(process->command);
 	aux_process = process;
 	while (aux_process != NULL)
 	{
-		aux_file = aux_process->infile;
-		while (aux_file != NULL)
-		{
-			(aux_file->filename) = delete_quotation(&(aux_file->filename));
-			aux_file = aux_file->next;
-		}
-		aux_file = aux_process->outfile;
-		while (aux_file != NULL)
-		{
-			(aux_file->filename) = delete_quotation(&(aux_file->filename));
-			aux_file = aux_file->next;
-		}
-		aux_command = aux_process->command;
-		if (aux_command)
-			while ((*aux_command) != NULL)
-			{
-				(*aux_command) = delete_quotation(aux_command);
-				aux_command++;
-			}
+		delete_all_quot(aux_process);
 		aux_process = aux_process->next;
 	}
 }
