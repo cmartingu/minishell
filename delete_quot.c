@@ -117,5 +117,5 @@ char	*delete_quotation(char **cmd)
 	tam = no_quot_tam(*cmd);
 	aux_cmd = final_command(*cmd, tam);
 	free(*cmd);
-	return (NULL);
+	return (aux_cmd);
 }
