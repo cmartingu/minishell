@@ -86,6 +86,8 @@ t_process	*procesos(int nb, char **tokens)
 		proceso = malloc(sizeof(t_process));
 		proceso->next = NULL;
 		proceso->command = NULL;
+		proceso->infile = NULL;
+		proceso->outfile = NULL;
 		add_process_back(proceso_aux, proceso);
 		while (tokens[i] != NULL && *(tokens[i]) != '|')
 			process_creation(proceso, tokens, &i, &cmd_quant);
@@ -103,20 +105,20 @@ void	delete_all_quot(t_process *process)
 	aux_file = process->infile;
 	while (aux_file != NULL)
 	{
-		(aux_file->filename) = delete_quotation(&(aux_file->filename));
+		delete_quotation(&(aux_file->filename));
 		aux_file = aux_file->next;
 	}
 	aux_file = process->outfile;
 	while (aux_file != NULL)
 	{
-		(aux_file->filename) = delete_quotation(&(aux_file->filename));
+		delete_quotation(&(aux_file->filename));
 		aux_file = aux_file->next;
 	}
 	aux_command = process->command;
 	if (aux_command)
 		while ((*aux_command) != NULL)
 		{
-			(*aux_command) = delete_quotation(aux_command);
+			delete_quotation(aux_command);
 			aux_command++;
 		}
 }

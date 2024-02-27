@@ -103,19 +103,19 @@ char	*final_command(char *cmd, int tam)
 	return (aux);
 }
 
-char	*delete_quotation(char **cmd)
+void	delete_quotation(char **cmd)
 {
 	char	*aux_cmd;
 	int		tam;
 
+	if (!cmd)
+		return ;
 	if (has_quot(*cmd) == -1)
-	{
-		aux_cmd = ft_strdup(*cmd);
-		free(*cmd);
-		return (aux_cmd);
-	}
+		return ;
+	printf("ORIGINAL: %s\n", *cmd);
 	tam = no_quot_tam(*cmd);
 	aux_cmd = final_command(*cmd, tam);
 	free(*cmd);
-	return (aux_cmd);
+	(*cmd) = aux_cmd;
+	printf("FINAL: %s\n", (*cmd));
 }

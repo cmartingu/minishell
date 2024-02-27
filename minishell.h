@@ -61,7 +61,7 @@ void		add_infile(t_process *proceso, char *inf);
 void		add_outfile(t_process *proceso, char *outf);
 void		free_arr(char ***arr);
 void		add_cmd(t_process *proceso, char *cmd, int cmd_quant);
-char		*delete_quotation(char **cmd);
+void		delete_quotation(char **cmd);
 extern void	rl_clear_history(void);
 extern void	rl_replace_line(const char *b, int s);
 
