@@ -11,7 +11,15 @@
 # **************************************************************************** #
 
 NAME = minishell
-SRC = ctrl_handlers.c funciones_lib.c minishell.c token_save.c add_process.c quotation_delete_aux.c token_quantification.c process_creation.c quotation_delete.c
+SRC =	parseo/ctrl_handlers.c	\
+		parseo/funciones_lib.c	\
+		parseo/token_save.c	\
+		parseo/add_process.c	\
+		parseo/quotation_delete_aux.c	\
+		parseo/token_quantification.c	\
+		parseo/process_creation.c	\
+		parseo/quotation_delete.c	\
+		minishell.c
 OBJ = $(SRC:.c=.o)
 CFLAGS := -Wall -Werror -Wextra
 LDFLAGS := -L/Users/carlos-m/.brew/opt/readline/lib
