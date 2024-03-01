@@ -1,0 +1,18 @@
+
+1. Tener el parseo hecho.
+ 	- FALTA EXPASION DE VARIABLES.
+	- FALTA comprobar que no da errores gramaticales (Ej: <>).
+	- FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
+
+2. Comprobar nº pipes. 
+	- FALTA TODO.
+		- Si no hay ninguno. Detectar si es builtin se hace en el padre, y sino fork y al ejecutor.
+		- Si hay 1 pipe o mas al ejecutor cada 
+
+3. Tener ejecutor hecho.
+	- FALTA TODO.
+		- Comprobar infiles y outfiles para redirigir entradas y salidas.
+
+4. Tener builtins hechos.
+
+5. Probar tonterias a manejar. 
