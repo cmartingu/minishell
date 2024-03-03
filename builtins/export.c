@@ -154,20 +154,30 @@ char	**do_export(char **comando, char **copyEnv)
 	int	pos;
 	int	i;
 
-	i = 1;
-	while (comando[i]){
-		if (checkExport(comando[i]) == 0)
+	i = 0;
+	if (comando[1] == NULL)
+	{
+		while (copyEnv[i] != NULL)
 		{
-			copyEnv = insertStr(copyEnv, comando[i]);
-			printf("Valido: %s\n", comando[i]);
+			printf("declare -x %s\n", copyEnv[i]);
+			i++;
 		}
-		else if (checkExport(comando[i]) == 1)
-		{
-			printf("Error: %s\n", comando[i]);
+	}
+	else
+	{
+		i = 1;
+		while (comando[i]){
+			if (checkExport(comando[i]) == 0)
+			{
+				copyEnv = insertStr(copyEnv, comando[i]);
+				printf("Valido: %s\n", comando[i]);
+			}
+			else if (checkExport(comando[i]) == 1)
+				printf("Error: %s\n", comando[i]);
+			else
+				printf("Invalido: %s\n", comando[i]);
+			i++;
 		}
-		else
-			printf("Invalido: %s\n", comando[i]);
-		i++;
 	}
 	return (copyEnv);
 }
@@ -177,7 +187,7 @@ char	**do_export(char **comando, char **copyEnv)
 int main(int argc, char **argv, char **env)
 {
 	char **copyEnv;
-	char *strings[] = {"export", "a=", "b", "=a", "a = b", NULL};
+	char *strings[] = {"export",  NULL};
 	copyEnv = copyArray(env);
 	copyEnv = do_export(strings, copyEnv);
 	

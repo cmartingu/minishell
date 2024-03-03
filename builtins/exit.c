@@ -10,4 +10,20 @@
 #include <dirent.h>     // Para opendir, readdir, closedir
 #include <string.h>     // Para strerror
 #include <termios.h>    // Para tcsetattr, tcgetattr
-#include <curses.h> 
+#include <curses.h>
+
+void	do_exit(char **comando)
+{
+	if (comando[2] != NULL)
+	{
+		printf("Error: too many arguments");
+		exit(1);
+	}
+	if (isnum(comando[1]) == 0)
+		exit(comando[1]);
+	else
+	{
+		printf("Error: Numeric argument required");
+		exit(255);
+	}
+}

@@ -49,7 +49,7 @@ int	main(int argc, char *argv[], char *env[])
 	// Guardar la configuración original para poder restaurarla más tarde
 	//termios_orig = termios_p;
 	
-	// Modificar la configuración para que CTRL+C no se muestre en el terminal
+	// Modificar la configuración para que CTRL+C ^C no se muestre en el terminal
 	//termios_p.c_lflag &= ~(ECHOCTL);
 	
 	// Aplicar la nueva configuración

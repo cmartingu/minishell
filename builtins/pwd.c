@@ -16,11 +16,11 @@ void 	do_pwd()
 {
     char	*buf;
 	
-	buf = getcwd(NULL, 0); // Solicita a getcwd que asigne un búfer
+	buf = getcwd(NULL, 0); 
     if (buf != NULL) {
-        printf("%s\n", buf); // Imprime el directorio actual
-        free(buf); // Libera la memoria asignada a buf
+        printf("%s\n", buf); 
+        free(buf);
     } else {
-        perror("Minishell error:"); // Maneja el error
+        perror("Minishell error:");
     }
 }
