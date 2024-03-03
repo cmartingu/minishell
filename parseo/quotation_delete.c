@@ -47,7 +47,7 @@ int	contador_comillas(char *comando)
 	return (0);
 }
 
-void	delete_quotation(char **cmd, char **env)
+void	delete_quotation(char **cmd, char **copyEnv)
 {
 	char	*aux_cmd;
 	int		tam;
@@ -56,13 +56,13 @@ void	delete_quotation(char **cmd, char **env)
 		return ;
 	if (has_quot(*cmd) == -1)
 		return ;
-	tam = no_quot_tam(*cmd);
+	tam = no_quot_tam(*cmd, copyEnv);
 	aux_cmd = final_command(*cmd, tam);
 	free(*cmd);
 	(*cmd) = aux_cmd;
 }
 
-void	delete_all_quot(t_process *process, char **env)
+void	delete_all_quot(t_process *process, char **copyEnv)
 {
 	t_fileobject	*aux_file;
 	char			**aux_command;
@@ -70,13 +70,13 @@ void	delete_all_quot(t_process *process, char **env)
 	aux_file = process->infile;
 	while (aux_file != NULL)
 	{
-		delete_quotation(&(aux_file->filename));
+		delete_quotation(&(aux_file->filename), copyEnv);
 		aux_file = aux_file->next;
 	}
 	aux_file = process->outfile;
 	while (aux_file != NULL)
 	{
-		delete_quotation(&(aux_file->filename));
+		delete_quotation(&(aux_file->filename), copyEnv);
 		aux_file = aux_file->next;
 	}
 	aux_command = process->command;
@@ -84,7 +84,7 @@ void	delete_all_quot(t_process *process, char **env)
 	{
 		while ((*aux_command) != NULL)
 		{
-			delete_quotation(aux_command);
+			delete_quotation(aux_command, copyEnv);
 			aux_command++;
 		}
 	}
