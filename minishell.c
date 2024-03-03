@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	tokenization_string(char *cmd)
+void	tokenization_string(char *cmd, char **env)
 {
 	t_process		*process;
 	t_process		*aux_process;
@@ -32,14 +32,16 @@ void	tokenization_string(char *cmd)
 	aux_process = process;
 	while (aux_process != NULL)
 	{
-		delete_all_quot(aux_process);
+		delete_all_quot(aux_process, env);
 		aux_process = aux_process->next;
 	}
 }
 
-int	main(void)
+int	main(int argc, char *argv[], char *env[])
 {
 	char	*comando;
+	argc = 0;
+	argv = NULL;
 	//struct termios termios_p;
 	//struct termios termios_orig;
 
@@ -80,7 +82,7 @@ int	main(void)
 				exit(0);
 			}
 			else
-				tokenization_string(comando);
+				tokenization_string(comando, env);
 		}
 	}
 	//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);

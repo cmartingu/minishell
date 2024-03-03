@@ -47,7 +47,7 @@ int	contador_comillas(char *comando)
 	return (0);
 }
 
-void	delete_quotation(char **cmd)
+void	delete_quotation(char **cmd, char **env)
 {
 	char	*aux_cmd;
 	int		tam;
@@ -62,7 +62,7 @@ void	delete_quotation(char **cmd)
 	(*cmd) = aux_cmd;
 }
 
-void	delete_all_quot(t_process *process)
+void	delete_all_quot(t_process *process, char **env)
 {
 	t_fileobject	*aux_file;
 	char			**aux_command;
