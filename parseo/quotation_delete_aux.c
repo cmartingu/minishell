@@ -27,22 +27,7 @@ int	has_quot(char *cmd)
 	}
 	return (-1);
 }
-/*
-char	*enviroment_sustitution(char *name_var, char **copyEnv)
-{
-	char	*final_str;
-	int		i;
 
-	i = 0;
-	while (copyEnv[i] && ft_strncmp(name_var, copyEnv[i], ft_strlen(name_var)) && copyEnv[i][namee] == "=" )
-		i++;
-	if (copyEnv[i] == NULL)
-		return (NULL);
-	final_str = ft_strdup(copyEnv[i] + ft_strlen(name_var) + 1);
-	printf("%s\n", final_str);
-	return (final_str); //AÑADIDO POR MIKE
-}
-*/
 int	enviroment_sustitution(char *name_var, char **copyEnv)
 {
     char *final_str;
@@ -51,8 +36,10 @@ int	enviroment_sustitution(char *name_var, char **copyEnv)
 
 	final_str = NULL;
     name_len = ft_strlen(name_var);
-    while (copyEnv[i] != NULL) {
-        if (strncmp(name_var, copyEnv[i], name_len) == 0 && copyEnv[i][name_len] == '=') {
+    while (copyEnv[i] != NULL)
+	{
+        if (strncmp(name_var, copyEnv[i], name_len) == 0 && copyEnv[i][name_len] == '=')
+		{
             final_str = strdup(copyEnv[i] + name_len + 1);
             break;
         }
@@ -130,16 +117,81 @@ int	no_quot_tam(char *cmd, char **copyEnv)
 	return (i - quant + auxiliar);
 }
 
-void	command_quot(char *cmd, char **aux, int *i, int *j)
+void	save_expansion(char **aux, int *j, char **copyEnv, char *name_var)
+{
+	char *final_str;
+    int i = 0;
+    int name_len;
+
+	final_str = NULL;
+    name_len = ft_strlen(name_var);
+    while (copyEnv[i] != NULL)
+	{
+        if (strncmp(name_var, copyEnv[i], name_len) == 0 && copyEnv[i][name_len] == '=')
+		{
+            final_str = strdup(copyEnv[i] + name_len + 1);
+            break;
+        }
+        i++;
+    }
+	if (copyEnv[i] == NULL)
+		return ;
+	i = 0;
+	while (final_str[i] != '\0')
+	{
+		(*aux)[*j] = final_str[i];
+		(*j)++;
+		i++;
+	}
+}
+
+void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copyEnv)
+{
+	char	*name_var;
+	int		auxiliar;
+	int		quit_chars;
+	int		k;
+
+	(*i)++;
+	auxiliar = *i;
+	while (cmd[*i] != '\0' && cmd[*i] != '"' && cmd[*i] != ' ' && cmd[*i] != '$')
+		(*i)++;
+	auxiliar = (*i) - auxiliar;
+	name_var = malloc((auxiliar + 1));
+	name_var[auxiliar] = '\0';
+	(*i)--;
+	quit_chars = auxiliar + 1;//los caracteres que hay que quitar($HOLA, habría que quitar 5)
+	while (auxiliar--)
+	{
+		name_var[auxiliar] = cmd[*i];
+		(*i)--;
+	}
+	printf("%s\n", name_var);//nombre de la variable a expandir
+	k = 0;
+	while (k < quit_chars)
+	{
+		(*i)++;
+		k++;
+	}
+	save_expansion(aux, j, copyEnv, name_var);
+	//return (enviroment_sustitution(name_var, copyEnv) - quit_chars);
+}
+
+void	command_quot(char *cmd, char **aux, int *i, int *j, char **copyEnv)
 {
 	if (cmd[*i] == '"')
 	{
 		(*i)++;
 		while (cmd[*i] != '"')
 		{
-			(*aux)[*j] = cmd[*i];
-			(*i)++;
-			(*j)++;
+			if (cmd[*i] == '$')
+				expansion_print(aux, i, j, cmd, copyEnv);
+			else
+			{
+				(*aux)[*j] = cmd[*i];
+				(*i)++;
+				(*j)++;
+			}
 		}
 	}
 	else if (cmd[*i] == '\'')
@@ -159,7 +211,7 @@ void	command_quot(char *cmd, char **aux, int *i, int *j)
 	}
 }
 
-char	*final_command(char *cmd, int tam)
+char	*final_command(char *cmd, int tam, char **copyEnv)
 {
 	char	*aux;
 	int		i;
@@ -177,7 +229,7 @@ char	*final_command(char *cmd, int tam)
 	j = 0;
 	while (cmd[i] != '\0')
 	{
-		command_quot(cmd, &aux, &i, &j);
+		command_quot(cmd, &aux, &i, &j, copyEnv);//Meter el bucle en la funcion e iicializar dentro i y j para poder pasar env
 		i++;
 	}
 	return (aux);

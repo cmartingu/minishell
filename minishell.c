@@ -24,12 +24,16 @@ void print_process_list(t_process *process) {
     
     while (process != NULL) {
         printf("Command:\n");
-        commandIndex = 0;
-        while (process->command[commandIndex] != NULL) {
-            printf("\t%s\n", process->command[commandIndex]);
-            commandIndex++;
-        }
-        
+		if (process->command != NULL)
+		{
+        	commandIndex = 0;
+        	while (process->command[commandIndex] != NULL)
+			{
+        	    printf("\t%s\n", process->command[commandIndex]);
+        	    commandIndex++;
+       		}
+		}
+
         printf("Input Files:\n");
         if (process->infile != NULL) {
             print_fileobject_list(process->infile);
