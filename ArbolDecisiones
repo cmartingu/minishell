@@ -1,6 +1,5 @@
 
 1. Tener el parseo hecho.
- 	- FALTA EXPASION DE VARIABLES.
 	- FALTA comprobar que no da errores gramaticales (Ej: <>).
 	- FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
 

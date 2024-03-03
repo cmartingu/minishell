@@ -77,7 +77,7 @@ char 	**copyArray(char **old)
 	return (new);
 }
 
-void	tokenization_string(char *cmd, char **copyEnv)
+t_process	*tokenization_string(char *cmd, char **copy_env)
 {
 	t_process		*process;
 	t_process		*aux_process;
@@ -97,22 +97,37 @@ void	tokenization_string(char *cmd, char **copyEnv)
 	aux_process = process;
 	while (aux_process != NULL)
 	{
-		delete_all_quot(aux_process, copyEnv);
+		delete_all_quot(aux_process, copy_env);
 		aux_process = aux_process->next;
 	}
-	print_process_list(process);
+	return (process);
 }
 
+int	count_process(t_process *procesos)
+{
+	t_process	*aux;
+	int			i;
 
+	aux = procesos;
+	i = 0;
+	while (aux != NULL)
+	{
+		aux = aux->next;
+		i++;
+	}
+	return (i);
+}
 
 int	main(int argc, char *argv[], char *env[])
 {
-	char	*comando;
+	char		*comando;
+	t_process	*procesos;
+	char		**copy_env;
+	int			process_num;
 	argc = 0;
 	argv = NULL;
-	char	**copyEnv;
 
-	copyEnv = copyArray(env);
+	copy_env = copyArray(env);
 	//struct termios termios_p;
 	//struct termios termios_orig;
 
@@ -153,7 +168,13 @@ int	main(int argc, char *argv[], char *env[])
 				exit(0);
 			}
 			else
-				tokenization_string(comando, copyEnv);
+			{
+				procesos = tokenization_string(comando, copy_env);
+				print_process_list(procesos);
+				process_num = count_process(procesos);
+				pipes = 
+				childs = 
+			}
 		}
 	}
 	//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);

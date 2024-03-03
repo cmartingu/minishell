@@ -28,7 +28,7 @@ int	has_quot(char *cmd)
 	return (-1);
 }
 
-int	enviroment_sustitution(char *name_var, char **copyEnv)
+int	enviroment_sustitution(char *name_var, char **copy_env)
 {
     char *final_str;
     int i = 0;
@@ -36,11 +36,11 @@ int	enviroment_sustitution(char *name_var, char **copyEnv)
 
 	final_str = NULL;
     name_len = ft_strlen(name_var);
-    while (copyEnv[i] != NULL)
+    while (copy_env[i] != NULL)
 	{
-        if (strncmp(name_var, copyEnv[i], name_len) == 0 && copyEnv[i][name_len] == '=')
+        if (strncmp(name_var, copy_env[i], name_len) == 0 && copy_env[i][name_len] == '=')
 		{
-            final_str = strdup(copyEnv[i] + name_len + 1);
+            final_str = strdup(copy_env[i] + name_len + 1);
             break;
         }
         i++;
@@ -50,7 +50,7 @@ int	enviroment_sustitution(char *name_var, char **copyEnv)
 }
 
 
-int	add_expansion(char *cmd, int *i, char **copyEnv)
+int	add_expansion(char *cmd, int *i, char **copy_env)
 {
 	char	*name_var;
 	int		aux;
@@ -78,10 +78,10 @@ int	add_expansion(char *cmd, int *i, char **copyEnv)
 		(*i)++;
 		j++;
 	}
-	return (enviroment_sustitution(name_var, copyEnv) - quit_chars);
+	return (enviroment_sustitution(name_var, copy_env) - quit_chars);
 }
 
-int	no_quot_tam(char *cmd, char **copyEnv)
+int	no_quot_tam(char *cmd, char **copy_env)
 {
 	int	i;
 	int	quant;
@@ -93,7 +93,7 @@ int	no_quot_tam(char *cmd, char **copyEnv)
 	while (cmd[i] != '\0')
 	{
 		if (cmd[i] == '$')//Añadir expansion
-			auxiliar += add_expansion(cmd, &i, copyEnv);
+			auxiliar += add_expansion(cmd, &i, copy_env);
 		if (cmd[i] == '\'')
 		{
 			i++;
@@ -108,7 +108,7 @@ int	no_quot_tam(char *cmd, char **copyEnv)
 			while (cmd[i] != '"')
 			{
 				if (cmd[i] == '$')//Añadir expansion
-					auxiliar += add_expansion(cmd, &i, copyEnv);
+					auxiliar += add_expansion(cmd, &i, copy_env);
 				else
 					i++;
 			}
@@ -118,7 +118,7 @@ int	no_quot_tam(char *cmd, char **copyEnv)
 	return (i - quant + auxiliar);
 }
 
-void	save_expansion(char **aux, int *j, char **copyEnv, char *name_var)
+void	save_expansion(char **aux, int *j, char **copy_env, char *name_var)
 {
 	char *final_str;
     int i = 0;
@@ -126,16 +126,16 @@ void	save_expansion(char **aux, int *j, char **copyEnv, char *name_var)
 
 	final_str = NULL;
     name_len = ft_strlen(name_var);
-    while (copyEnv[i] != NULL)
+    while (copy_env[i] != NULL)
 	{
-        if (strncmp(name_var, copyEnv[i], name_len) == 0 && copyEnv[i][name_len] == '=')
+        if (strncmp(name_var, copy_env[i], name_len) == 0 && copy_env[i][name_len] == '=')
 		{
-            final_str = strdup(copyEnv[i] + name_len + 1);
+            final_str = strdup(copy_env[i] + name_len + 1);
             break;
         }
         i++;
     }
-	if (copyEnv[i] == NULL)
+	if (copy_env[i] == NULL)
 		return ;
 	i = 0;
 	while (final_str[i] != '\0')
@@ -146,7 +146,7 @@ void	save_expansion(char **aux, int *j, char **copyEnv, char *name_var)
 	}
 }
 
-void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copyEnv)
+void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copy_env)
 {
 	char	*name_var;
 	int		auxiliar;
@@ -173,21 +173,21 @@ void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copyEnv)
 		(*i)++;
 		k++;
 	}
-	save_expansion(aux, j, copyEnv, name_var);
-	//return (enviroment_sustitution(name_var, copyEnv) - quit_chars);
+	save_expansion(aux, j, copy_env, name_var);
+	//return (enviroment_sustitution(name_var, copy_env) - quit_chars);
 }
 
-void	command_quot(char *cmd, char **aux, int *i, int *j, char **copyEnv)
+void	command_quot(char *cmd, char **aux, int *i, int *j, char **copy_env)
 {
 	if (cmd[*i] == '$')
-		expansion_print(aux, i, j, cmd, copyEnv);
+		expansion_print(aux, i, j, cmd, copy_env);
 	if (cmd[*i] == '"')
 	{
 		(*i)++;
 		while (cmd[*i] != '"')
 		{
 			if (cmd[*i] == '$')
-				expansion_print(aux, i, j, cmd, copyEnv);
+				expansion_print(aux, i, j, cmd, copy_env);
 			else
 			{
 				(*aux)[*j] = cmd[*i];
@@ -213,7 +213,7 @@ void	command_quot(char *cmd, char **aux, int *i, int *j, char **copyEnv)
 	}
 }
 
-char	*final_command(char *cmd, int tam, char **copyEnv)
+char	*final_command(char *cmd, int tam, char **copy_env)
 {
 	char	*aux;
 	int		i;
@@ -230,7 +230,7 @@ char	*final_command(char *cmd, int tam, char **copyEnv)
 	j = 0;
 	while (cmd[i] != '\0')
 	{
-		command_quot(cmd, &aux, &i, &j, copyEnv);//Meter el bucle en la funcion e iicializar dentro i y j para poder pasar env
+		command_quot(cmd, &aux, &i, &j, copy_env);//Meter el bucle en la funcion e iicializar dentro i y j para poder pasar env
 		i++;
 	}
 	return (aux);
