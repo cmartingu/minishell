@@ -115,7 +115,6 @@ int	no_quot_tam(char *cmd, char **copyEnv)
 		}
 		i++;
 	}
-	printf("TAMAÑO FINAL: %d\n", i - quant + auxiliar);
 	return (i - quant + auxiliar);
 }
 
@@ -168,7 +167,6 @@ void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copyEnv)
 		name_var[auxiliar] = cmd[*i];
 		(*i)--;
 	}
-	printf("%s\n", name_var);//nombre de la variable a expandir
 	k = 0;
 	while (k < quit_chars)
 	{
@@ -221,7 +219,6 @@ char	*final_command(char *cmd, int tam, char **copyEnv)
 	int		i;
 	int		j;
 
-	printf("Tamaño %d\n", tam);
 	aux = malloc(tam + 1);
 	if (!aux)
 	{
