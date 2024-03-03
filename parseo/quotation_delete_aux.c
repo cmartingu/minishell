@@ -92,6 +92,8 @@ int	no_quot_tam(char *cmd, char **copyEnv)
 	auxiliar = 0;
 	while (cmd[i] != '\0')
 	{
+		if (cmd[i] == '$')//Añadir expansion
+			auxiliar += add_expansion(cmd, &i, copyEnv);
 		if (cmd[i] == '\'')
 		{
 			i++;
@@ -179,6 +181,8 @@ void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copyEnv)
 
 void	command_quot(char *cmd, char **aux, int *i, int *j, char **copyEnv)
 {
+	if (cmd[*i] == '$')
+		expansion_print(aux, i, j, cmd, copyEnv);
 	if (cmd[*i] == '"')
 	{
 		(*i)++;

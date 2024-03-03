@@ -54,8 +54,8 @@ void	delete_quotation(char **cmd, char **copyEnv)
 
 	if (!cmd)
 		return ;
-	if (has_quot(*cmd) == -1)
-		return ;
+	//if (has_quot(*cmd) == -1)
+	//	return ;
 	tam = no_quot_tam(*cmd, copyEnv);
 	aux_cmd = final_command(*cmd, tam, copyEnv);
 	free(*cmd);
@@ -85,7 +85,6 @@ void	delete_all_quot(t_process *process, char **copyEnv)
 		while ((*aux_command) != NULL)
 		{
 			delete_quotation(aux_command, copyEnv);
-			printf("\n\n%s\n", (*aux_command));
 			aux_command++;
 		}
 	}

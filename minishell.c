@@ -94,13 +94,13 @@ void	tokenization_string(char *cmd, char **copyEnv)
 	tokens = save_tokens(tam, &cmd);
 	forks = pipes_quant(tokens) + 1;
 	process = procesos(forks, tokens);
-	print_process_list(process);
 	aux_process = process;
 	while (aux_process != NULL)
 	{
 		delete_all_quot(aux_process, copyEnv);
 		aux_process = aux_process->next;
 	}
+	print_process_list(process);
 }
 
 
