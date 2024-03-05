@@ -103,6 +103,7 @@ t_process	*tokenization_string(char *cmd, char **copy_env)
 	forks = pipes_quant(tokens) + 1;
 	process = procesos(forks, tokens);
 	aux_process = process;
+	//print_process_list(process);
 	while (aux_process != NULL)
 	{
 		delete_all_quot(aux_process, copy_env);

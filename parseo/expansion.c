@@ -46,7 +46,6 @@ void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copy_env)
 	char	*name_var;
 	int		auxiliar;
 	int		quit_chars;
-	int		k;
 
 	(*i)++;
 	auxiliar = *i;
@@ -63,12 +62,8 @@ void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copy_env)
 		name_var[auxiliar] = cmd[*i];
 		(*i)--;
 	}
-	k = 0;
-	while (k < quit_chars)
-	{
+	while (quit_chars--)
 		(*i)++;
-		k++;
-	}
 	save_expansion(aux, j, copy_env, name_var);
 }
 

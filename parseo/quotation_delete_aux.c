@@ -28,46 +28,17 @@ int	has_quot(char *cmd)
 	return (-1);
 }
 
-int	enviroment_sustitution(char *name_var, char **copy_env, \
-int *iter, int cant_iter)
-{
-	char	*final_str;
-	int		i;
-	int		name_len;
-	int		j;
-
-	i = 0;
-	final_str = NULL;
-	name_len = ft_strlen(name_var);
-	while (copy_env[i] != NULL)
-	{
-		if (strncmp(name_var, copy_env[i], name_len) == 0 && \
-		copy_env[i][name_len] == '=')
-		{
-			final_str = strdup(copy_env[i] + name_len + 1);
-			break ;
-		}
-		i++;
-	}
-	j = 0;
-	while (j < cant_iter)
-	{
-		(*iter)++;
-		j++;
-	}
-	return (ft_strlen(final_str));
-}
-
 void	no_quot_tam_aux(char *cmd, int *i, int *quant, char **copy_env)
 {
 	if (cmd[*i] == '$')
-		quant -= add_expansion(cmd, i, copy_env);
-	if (cmd[*i] == '\'')
+		(*quant) -= add_expansion(cmd, i, copy_env);
+	else if (cmd[*i] == '\'')
 	{
 		(*i)++;
 		(*quant) += 2;
 		while (cmd[*i] != '\'')
 			(*i)++;
+		(*i)++;
 	}
 	else if (cmd[*i] == '"')
 	{
@@ -80,7 +51,10 @@ void	no_quot_tam_aux(char *cmd, int *i, int *quant, char **copy_env)
 			else
 				(*i)++;
 		}
+		(*i)++;
 	}
+	else
+		(*i)++;
 }
 
 int	no_quot_tam(char *cmd, char **copy_env)
@@ -93,9 +67,27 @@ int	no_quot_tam(char *cmd, char **copy_env)
 	while (cmd[i] != '\0')
 	{
 		no_quot_tam_aux(cmd, &i, &quant, copy_env);
-		i++;
 	}
 	return (i - quant);
+}
+
+void	aux_command_quot(char *cmd, int *i, int *j, char **aux)
+{
+	if (cmd[*i] == '\'')
+	{
+		(*i)++;
+		while (cmd[*i] != '\'')
+		{
+			(*aux)[*j] = cmd[*i];
+			(*i)++;
+			(*j)++;
+		}
+	}
+	else
+	{
+		(*aux)[*j] = cmd[*i];
+		(*j)++;
+	}
 }
 
 void	command_quot(char *cmd, char **aux, char **copy_env)
@@ -124,21 +116,8 @@ void	command_quot(char *cmd, char **aux, char **copy_env)
 				}
 			}
 		}
-		else if (cmd[i] == '\'')
-		{
-			i++;
-			while (cmd[i] != '\'')
-			{
-				(*aux)[j] = cmd[i];
-				i++;
-				j++;
-			}
-		}
 		else
-		{
-			(*aux)[j] = cmd[i];
-			j++;
-		}
+			aux_command_quot(cmd, &i, &j, aux);
 		i++;
 	}
 }
