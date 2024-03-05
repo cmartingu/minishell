@@ -12,7 +12,7 @@
 
 NAME = minishell
 SRC =	parseo/ctrl_handlers.c	\
-		parseo/funciones_lib.c	\
+		parseo/funciones_aux.c	\
 		parseo/token_save.c	\
 		parseo/add_process.c	\
 		parseo/quotation_delete_aux.c	\
@@ -30,14 +30,18 @@ CC := cc
 #ESTO COMPILA BIEN MIGUEL: cc pruebas.c -o tu_programa -I/Users/mllamas-/.brew/include -L/Users/mllamas-/.brew/lib -lreadline
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+$(NAME): $(OBJ) Libft/libft.a
+	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS) Libft/libft.a
 
 %.o: %.c
 	$(CC) -c $< -o $@ $(CFLAGS)
 
+Libft/libft.a:
+		make -C Libft/
+
 clean:
 	$(REMOVE) $(OBJ)
+	make -C Libft/ fclean
 
 fclean: clean
 	$(REMOVE) $(NAME)
