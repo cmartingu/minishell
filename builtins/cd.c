@@ -1,16 +1,28 @@
-#include <stdio.h>      // Para printf
-#include <stdlib.h>     // Para malloc, free
-#include <unistd.h>     // Para read, write, close, fork, execve, chdir, getcwd, dup, dup2, pipe, access, unlink, isatty, ttyname, ttyslot
-#include <fcntl.h>      // Para open
-#include <sys/wait.h>   // Para wait, waitpid, wait3, wait4
-#include <sys/types.h> // 
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: carlos-m <carlos-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/05 10:58:54 by carlos-m          #+#    #+#             */
+/*   Updated: 2024/03/05 10:58:57 by carlos-m         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 #include <sys/resource.h>
-#include <sys/stat.h>   // Para stat, fstat, lstat
-#include <signal.h>     // Para signal, kill, sigaction
-#include <dirent.h>     // Para opendir, readdir, closedir
-#include <string.h>     // Para strerror
-#include <termios.h>    // Para tcsetattr, tcgetattr
-#include <curses.h> 
+#include <sys/stat.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <termios.h>
+#include <curses.h>
 
 size_t	ft_strlen(const char *s)
 {
@@ -44,17 +56,20 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	return (aux1[i] - aux2[i]);
 }
 
-void 	do_pwd()
+void	do_pwd(void)
 {
-    char	*buf;
-	
-	buf = getcwd(NULL, 0); 
-    if (buf != NULL) {
-        printf("%s\n", buf); 
-        free(buf);
-    } else {
-        perror("Minishell error:");
-    }
+	char	*buf;
+
+	buf = getcwd(NULL, 0);
+	if (buf != NULL)
+	{
+		printf("%s\n", buf);
+		free(buf);
+	}
+	else
+	{
+		perror("Minishell error:");
+	}
 }
 
 void	do_cd(char **command, char **copyEnv)
@@ -71,21 +86,23 @@ void	do_cd(char **command, char **copyEnv)
 			if (strncmp(copyEnv[i], "HOME=", 5) == 0)
 			{
 				home = copyEnv[i] + 5;
-				break;
+				break ;
 			}
 			i++;
 		}
 		printf("Path Home: %s\n", home);
-		if (home && chdir(home) != 0) {
-    		perror("Minishell");
-    	}
+		if (home && chdir(home) != 0)
+		{
+			perror("Minishell");
+		}
 	}
 	else
 	{
 		printf("Path Comand: %s\n", command[1]);
-		if (chdir(command[1]) != 0) {
-        	perror("Minishell");
-   	 	}
+		if (chdir(command[1]) != 0)
+		{
+			perror("Minishell");
+		}
 	}
 }
 
@@ -104,18 +121,18 @@ char	*ft_strdup(const char *s1)
 	return (sol);
 }
 
-char 	**copyArray(char **old)
+char	**copy_array(char **old)
 {
-	int	len;
-	int	i;
+	int		len;
+	int		i;
 	char	**new;
 
 	len = 0;
 	while (old[len])
 		len++;
 	new = malloc((len + 1) * sizeof(char *));
-	if (new == NULL) 
-		return NULL;
+	if (new == NULL)
+		return (NULL);
 	i = 0;
 	while (i < len)
 	{
@@ -126,11 +143,13 @@ char 	**copyArray(char **old)
 	return (new);
 }
 
-int main(int argc, char **argv, char **env)
+/*int main(int argc, char **argv, char **env)
 {
-	char **copyEnv;
-	char *strings[] = {"cd", "~", NULL};
-	copyEnv = copyArray(env);
+	char	**copyEnv;
+	char	*strings[];
+
+	strings = {"cd", "~", NULL};
+	copyEnv = copy_array(env);
 	do_cd(strings, copyEnv);
 	do_pwd();
-}
+}*/

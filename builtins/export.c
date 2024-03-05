@@ -1,26 +1,39 @@
-#include <stdio.h>      // Para printf
-#include <stdlib.h>     // Para malloc, free
-#include <unistd.h>     // Para read, write, close, fork, execve, chdir, getcwd, dup, dup2, pipe, access, unlink, isatty, ttyname, ttyslot
-#include <fcntl.h>      // Para open
-#include <sys/wait.h>   // Para wait, waitpid, wait3, wait4
-#include <sys/types.h> // 
-#include <sys/resource.h>
-#include <sys/stat.h>   // Para stat, fstat, lstat
-#include <signal.h>     // Para signal, kill, sigaction
-#include <dirent.h>     // Para opendir, readdir, closedir
-#include <string.h>     // Para strerror
-#include <termios.h>    // Para tcsetattr, tcgetattr
-#include <curses.h> 
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: carlos-m <carlos-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/05 11:17:01 by carlos-m          #+#    #+#             */
+/*   Updated: 2024/03/05 11:17:02 by carlos-m         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	printArr(char **arr)
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <termios.h>
+#include <curses.h>
+
+void	print_arr(char **arr)
 {
 	int	i;
 
 	i = 0;
-    while (arr[i] != NULL) {
-        printf("%s,%d\n", arr[i],i);
-        i++;
-    }
+	while (arr[i] != NULL)
+	{
+		printf("%s,%d\n", arr[i], i);
+		i++;
+	}
 	printf("\n");
 }
 
@@ -82,18 +95,18 @@ int	ft_isalnum(int c)
 		return (0);
 }
 
-char 	**insertStr(char **old, char *str)
+char	**insert_str(char **old, char *str)
 {
-	int	len;
-	int	i;
+	int		len;
+	int		i;
 	char	**new;
 
 	len = 0;
 	while (old[len])
 		len++;
 	new = malloc((len + 2) * sizeof(char *));
-	if (new == NULL) 
-		return NULL;
+	if (new == NULL)
+		return (NULL);
 	i = 0;
 	while (i < len)
 	{
@@ -106,18 +119,18 @@ char 	**insertStr(char **old, char *str)
 	return (new);
 }
 
-char 	**copyArray(char **old)
+char	**copy_array(char **old)
 {
-	int	len;
-	int	i;
+	int		len;
+	int		i;
 	char	**new;
 
 	len = 0;
 	while (old[len])
 		len++;
 	new = malloc((len + 1) * sizeof(char *));
-	if (new == NULL) 
-		return NULL;
+	if (new == NULL)
+		return (NULL);
 	i = 0;
 	while (i < len)
 	{
@@ -128,25 +141,25 @@ char 	**copyArray(char **old)
 	return (new);
 }
 
-int checkExport(const char *str)
+int	check_export(const char *str)
 {
 	int	equal;
 
 	equal = 0;
-    if (!ft_isalpha(*str))
-        return 1;
+	if (!ft_isalpha(*str))
+		return (1);
 	str++;
-    while (*str != '\0') {
+	while (*str != '\0')
+	{
 		if (*str == '=')
 			equal = 1;
-        else if (!ft_isalnum(*str))
-            return 1;
-        
-        str++;
-    }
+		else if (!ft_isalnum(*str))
+			return (1);
+		str++;
+	}
 	if (equal == 1)
 		return (0);
-    return (2); 
+	return (2);
 }
 
 char	**do_export(char **comando, char **copyEnv)
@@ -166,13 +179,14 @@ char	**do_export(char **comando, char **copyEnv)
 	else
 	{
 		i = 1;
-		while (comando[i]){
-			if (checkExport(comando[i]) == 0)
+		while (comando[i])
+		{
+			if (check_export(comando[i]) == 0)
 			{
-				copyEnv = insertStr(copyEnv, comando[i]);
+				copyEnv = insert_str(copyEnv, comando[i]);
 				printf("Valido: %s\n", comando[i]);
 			}
-			else if (checkExport(comando[i]) == 1)
+			else if (check_export(comando[i]) == 1)
 				printf("Error: %s\n", comando[i]);
 			else
 				printf("Invalido: %s\n", comando[i]);
@@ -181,14 +195,12 @@ char	**do_export(char **comando, char **copyEnv)
 	}
 	return (copyEnv);
 }
-	
 
-
-int main(int argc, char **argv, char **env)
+/*int main(int argc, char **argv, char **env)
 {
 	char **copyEnv;
 	char *strings[] = {"export",  NULL};
-	copyEnv = copyArray(env);
+	copyEnv = copy_array(env);
 	copyEnv = do_export(strings, copyEnv);
 	
-}
+}*/

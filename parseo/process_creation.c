@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	create_process(t_process *proceso, char **tok, int *i, int *qua)
 {

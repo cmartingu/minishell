@@ -12,61 +12,69 @@
 
 #include "minishell.h"
 
-void print_fileobject_list(t_fileobject *fileobject) {
-    while (fileobject != NULL) {
-        printf("\tFilename: %s\n", fileobject->filename);
-        fileobject = fileobject->next;
-    }
+void	print_fileobject_list(t_fileobject *fileobject)
+{
+	while (fileobject != NULL)
+	{
+		printf("\tFilename: %s\n", fileobject->filename);
+		fileobject = fileobject->next;
+	}
 }
 
-void print_process_list(t_process *process) {
-    int commandIndex;
-    
-    while (process != NULL) {
-        printf("Command:\n");
+void	print_process_list(t_process *process)
+{
+	int	command_index;
+
+	while (process != NULL)
+	{
+		printf("Command:\n");
 		if (process->command != NULL)
 		{
-        	commandIndex = 0;
-        	while (process->command[commandIndex] != NULL)
+			command_index = 0;
+			while (process->command[command_index] != NULL)
 			{
-        	    printf("\t%s\n", process->command[commandIndex]);
-        	    commandIndex++;
-       		}
+				printf("\t%s\n", process->command[command_index]);
+				command_index++;
+			}
 		}
-
-        printf("Input Files:\n");
-        if (process->infile != NULL) {
-            print_fileobject_list(process->infile);
-        } else {
-            printf("\tNone\n");
-        }
-        
-        printf("Output Files:\n");
-        if (process->outfile != NULL) {
-            print_fileobject_list(process->outfile);
-        } else {
-            printf("\tNone\n");
-        }
-        
-        process = process->next;
-        if (process != NULL) {
-            printf("---- Next Process ----\n");
-        }
-    }
+		printf("Input Files:\n");
+		if (process->infile != NULL)
+		{
+			print_fileobject_list(process->infile);
+		}
+		else
+		{
+			printf("\tNone\n");
+		}
+		printf("Output Files:\n");
+		if (process->outfile != NULL)
+		{
+			print_fileobject_list(process->outfile);
+		}
+		else
+		{
+			printf("\tNone\n");
+		}
+		process = process->next;
+		if (process != NULL)
+		{
+			printf("---- Next Process ----\n");
+		}
+	}
 }
 
-char 	**copyArray(char **old)
+char	**copy_array(char **old)
 {
-	int	len;
-	int	i;
+	int		len;
+	int		i;
 	char	**new;
 
 	len = 0;
 	while (old[len])
 		len++;
 	new = malloc((len + 1) * sizeof(char *));
-	if (new == NULL) 
-		return NULL;
+	if (new == NULL)
+		return (NULL);
 	i = 0;
 	while (i < len)
 	{
@@ -124,24 +132,24 @@ int	main(int argc, char *argv[], char *env[])
 	t_process	*procesos;
 	char		**copy_env;
 	int			process_num;
+
 	argc = 0;
 	argv = NULL;
+	copy_env = copy_array(env);
+	/*struct termios termios_p;
+	struct termios termios_orig;
 
-	copy_env = copyArray(env);
-	//struct termios termios_p;
-	//struct termios termios_orig;
-
-	//tcgetattr(STDIN_FILENO, &termios_p);
-	// Guardar la configuración original para poder restaurarla más tarde
-	//termios_orig = termios_p;
+	tcgetattr(STDIN_FILENO, &termios_p);
+	 Guardar la configuración original para poder restaurarla más tarde
+	termios_orig = termios_p;
 	
-	// Modificar la configuración para que CTRL+C ^C no se muestre en el terminal
-	//termios_p.c_lflag &= ~(ECHOCTL);
+	 Modificar la configuración para que CTRL+C ^C no se muestre en el terminal
+	termios_p.c_lflag &= ~(ECHOCTL);
 	
-	// Aplicar la nueva configuración
-	//tcsetattr(STDIN_FILENO, TCSANOW, &termios_p);
+	 Aplicar la nueva configuración
+	tcsetattr(STDIN_FILENO, TCSANOW, &termios_p);
 
-	/*if (signal(SIGINT, ctrl_c_handler) == SIG_ERR) {
+	if (signal(SIGINT, ctrl_c_handler) == SIG_ERR) {
 		printf("Error al establecer el manejador de SIGINT\n");
 		tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
 		return EXIT_FAILURE;
@@ -172,8 +180,6 @@ int	main(int argc, char *argv[], char *env[])
 				procesos = tokenization_string(comando, copy_env);
 				print_process_list(procesos);
 				process_num = count_process(procesos);
-				pipes = 
-				childs = 
 			}
 		}
 	}

@@ -1,30 +1,46 @@
-#include <stdio.h>      // Para printf
-#include <stdlib.h>     // Para malloc, free
-#include <unistd.h>     // Para read, write, close, fork, execve, chdir, getcwd, dup, dup2, pipe, access, unlink, isatty, ttyname, ttyslot
-#include <fcntl.h>      // Para open
-#include <sys/wait.h>   // Para wait, waitpid, wait3, wait4
-#include <sys/types.h> // 
-#include <sys/resource.h>
-#include <sys/stat.h>   // Para stat, fstat, lstat
-#include <signal.h>     // Para signal, kill, sigaction
-#include <dirent.h>     // Para opendir, readdir, closedir
-#include <string.h>     // Para strerror
-#include <termios.h>    // Para tcsetattr, tcgetattr
-#include <curses.h> 
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: carlos-m <carlos-m@student.42madrid.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/05 11:17:01 by carlos-m          #+#    #+#             */
+/*   Updated: 2024/03/05 11:17:02 by carlos-m         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void do_unset(char *command, char **env)
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <termios.h>
+#include <curses.h>
+
+void	do_unset(char *command, char **env)
 {
-	char *var;
+	char	*var;
 
 	var = ft_substr(comando, 6, ft_strlen(comando) - 6);
- 	while (*env != NULL) {
-        if (ft_strncmp(*env, var, ft_strlen(var)) == 0 && (*env)[ft_strlen(var)] == '=') {
-            while (*env != NULL) {
-                *env = *(env + 1);
-                env++;
-            }
-            break;
-        }
-        env++;
-    }
+	while (*env != NULL)
+	{
+		if (ft_strncmp(*env, var, ft_strlen(var)) == 0 && \
+		(*env)[ft_strlen(var)] == '=')
+		{
+			while (*env != NULL)
+			{
+				*env = *(env + 1);
+				env++;
+			}
+			break ;
+		}
+		env++;
+	}
 }
