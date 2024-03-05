@@ -47,6 +47,21 @@ int	contador_comillas(char *comando)
 	return (0);
 }
 
+char	*final_command(char *cmd, int tam, char **copy_env)
+{
+	char	*aux;
+
+	aux = malloc(tam + 1);
+	if (!aux)
+	{
+		printf("Minishell error: malloc error\n");
+		exit(1);
+	}
+	aux[tam] = '\0';
+	command_quot(cmd, &aux, copy_env);
+	return (aux);
+}
+
 void	delete_quotation(char **cmd, char **copy_env)
 {
 	char	*aux_cmd;

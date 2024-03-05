@@ -109,30 +109,11 @@ void	command_quot(char *cmd, char **aux, char **copy_env)
 				if (cmd[i] == '$')
 					expansion_print(aux, &i, &j, cmd, copy_env);
 				else
-				{
-					(*aux)[j] = cmd[i];
-					i++;
-					j++;
-				}
+					save_final_quot(aux, cmd, &i, &j);
 			}
 		}
 		else
 			aux_command_quot(cmd, &i, &j, aux);
 		i++;
 	}
-}
-
-char	*final_command(char *cmd, int tam, char **copy_env)
-{
-	char	*aux;
-
-	aux = malloc(tam + 1);
-	if (!aux)
-	{
-		printf("Minishell error: malloc error\n");
-		exit(1);
-	}
-	aux[tam] = '\0';
-	command_quot(cmd, &aux, copy_env);
-	return (aux);
 }

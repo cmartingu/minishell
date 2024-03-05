@@ -51,11 +51,13 @@ int			pipes_quant(char **tokens);
 int			has_quot(char *cmd);
 int			no_quot_tam(char *cmd, char **copy_env);
 int			add_expansion(char *cmd, int *i, char **copy_env);
-int			enviroment_sustitution(char *name_var, char **copy_env, int *iter, int cant_iter);
+int			enviroment_sustitution(char *name_var, char **copy_env, \
+int *iter, int cant_iter);
 int			end_quotation(char **cmd, char quot);
 int			contador_comillas(char *comando);
 int			add_expansion(char *cmd, int *i, char **copy_env);
-int			enviroment_sustitution(char *name_var, char **copy_env, int *iter, int cant_iter);
+int			enviroment_sustitution(char *name_var, char **copy_env, \
+int *iter, int cant_iter);
 char		*ft_strdup(const char *s1);
 char		**save_tokens(int tam, char **cmd);
 char		*next_token(char **cmd);
@@ -75,8 +77,10 @@ void		free_arr(char ***arr);
 void		delete_quotation(char **cmd, char **copy_env);
 void		delete_all_quot(t_process *process, char **copy_env);
 void		count_quotation(char **cmd, int *i, char quot);
-void		expansion_print(char **aux, int *i, int *j, char *cmd, char **copy_env);
+void		expansion_print(char **aux, int *i, int *j, \
+char *cmd, char **copy_env);
 void		create_process(t_process *proceso, char **tok, int *i, int *qua);
+void		save_final_quot(char **aux, char *cmd, int *i, int *j);
 t_process	*tokenization_string(char *cmd, char **copy_env);
 void		char_exc(char **cmd, int *quant, int *i);
 t_process	*procesos(int nb, char **tokens);

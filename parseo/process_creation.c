@@ -61,3 +61,10 @@ t_process	*procesos(int nb, char **tokens)
 	free(proceso_aux);
 	return (proceso);
 }
+
+void	save_final_quot(char **aux, char *cmd, int *i, int *j)
+{
+	(*aux)[*j] = cmd[*i];
+	(*i)++;
+	(*j)++;
+}
