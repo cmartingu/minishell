@@ -58,31 +58,6 @@ int *iter, int cant_iter)
 	return (ft_strlen(final_str));
 }
 
-int	add_expansion(char *cmd, int *i, char **copy_env)
-{
-	char	*name_var;
-	int		aux;
-	int		quit_chars;
-
-	(*i)++;
-	aux = *i;
-	while (cmd[*i] != '\0' && cmd[*i] != '"' && cmd[*i] != ' ' \
-	&& cmd[*i] != '$')
-		(*i)++;
-	aux = (*i) - aux;
-	name_var = malloc((aux + 1));
-	name_var[aux] = '\0';
-	(*i)--;
-	quit_chars = aux + 1;
-	while (aux--)
-	{
-		name_var[aux] = cmd[*i];
-		(*i)--;
-	}
-	return (enviroment_sustitution(name_var, copy_env, i, \
-	quit_chars) - quit_chars);
-}
-
 void	no_quot_tam_aux(char *cmd, int *i, int *quant, char **copy_env)
 {
 	if (cmd[*i] == '$')
@@ -121,66 +96,6 @@ int	no_quot_tam(char *cmd, char **copy_env)
 		i++;
 	}
 	return (i - quant);
-}
-
-void	save_expansion(char **aux, int *j, char **copy_env, char *name_var)
-{
-	char	*final_str;
-	int		i;
-	int		len;
-
-	i = 0;
-	final_str = NULL;
-	len = ft_strlen(name_var);
-	while (copy_env[i] != NULL)
-	{
-		if (strncmp(name_var, copy_env[i], len) == 0 && copy_env[i][len] == '=')
-		{
-			final_str = strdup(copy_env[i] + len + 1);
-			break ;
-		}
-		i++;
-	}
-	if (copy_env[i] == NULL)
-		return ;
-	i = 0;
-	while (final_str[i] != '\0')
-	{
-		(*aux)[*j] = final_str[i];
-		(*j)++;
-		i++;
-	}
-}
-
-void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copy_env)
-{
-	char	*name_var;
-	int		auxiliar;
-	int		quit_chars;
-	int		k;
-
-	(*i)++;
-	auxiliar = *i;
-	while (cmd[*i] != '\0' && cmd[*i] != '"' && \
-	cmd[*i] != ' ' && cmd[*i] != '$')
-		(*i)++;
-	auxiliar = (*i) - auxiliar;
-	name_var = malloc((auxiliar + 1));
-	name_var[auxiliar] = '\0';
-	(*i)--;
-	quit_chars = auxiliar + 1;
-	while (auxiliar--)
-	{
-		name_var[auxiliar] = cmd[*i];
-		(*i)--;
-	}
-	k = 0;
-	while (k < quit_chars)
-	{
-		(*i)++;
-		k++;
-	}
-	save_expansion(aux, j, copy_env, name_var);
 }
 
 void	command_quot(char *cmd, char **aux, char **copy_env)
