@@ -84,7 +84,8 @@ void		free_arr(char ***arr);
 void		delete_quotation(char **cmd, char **copy_env);
 void		delete_all_quot(t_process *process, char **copy_env);
 void		count_quotation(char **cmd, int *i, char quot);
-void		expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env);
+void		expansion_print(char *cmd, t_auxiliar *aux, \
+char **final, char **cp_env);
 void		save_expansion(char **aux, int *j, char **copy_env, char *name_var);
 void		create_process(t_process *proceso, char **tok, int *i, int *qua);
 void		save_final_quot(char **aux, char *cmd, int *i, int *j);
