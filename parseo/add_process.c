@@ -28,18 +28,19 @@ int	pipes_quant(char **tokens)
 	return (pipes);
 }
 
-void	add_infile(t_process *proceso, char *inf)
+void	add_infile(t_process *proceso, char *inf, int flag)
 {
 	t_fileobject	*new_file;
 	t_fileobject	*aux_file;
 
-	new_file = malloc(sizeof(new_file));
+	new_file = malloc(sizeof(t_fileobject));
 	if (!new_file)
 	{
 		printf("Error, malloc error\n");
 		exit(1);
 	}
 	new_file->filename = ft_strdup(inf);
+	new_file->heredoc = flag;
 	new_file->next = NULL;
 	if (!(proceso->infile))
 		proceso->infile = new_file;
@@ -52,18 +53,19 @@ void	add_infile(t_process *proceso, char *inf)
 	}
 }
 
-void	add_outfile(t_process *proceso, char *outf)
+void	add_outfile(t_process *proceso, char *outf, int flag)
 {
 	t_fileobject	*new_file;
 	t_fileobject	*aux_file;
 
-	new_file = malloc(sizeof(new_file));
+	new_file = malloc(sizeof(t_fileobject));
 	if (!new_file)
 	{
 		printf("Error, malloc error\n");
 		exit(1);
 	}
 	new_file->filename = ft_strdup(outf);
+	new_file->heredoc = flag;
 	new_file->next = NULL;
 	if (!(proceso->outfile))
 		proceso->outfile = new_file;

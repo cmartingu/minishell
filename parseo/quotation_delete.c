@@ -70,7 +70,6 @@ void	delete_quotation(char **cmd, char **copy_env)
 	if (!cmd)
 		return ;
 	tam = no_quot_tam(*cmd, copy_env);
-	printf("%d\n", tam);
 	aux_cmd = final_command(*cmd, tam, copy_env);
 	free(*cmd);
 	(*cmd) = aux_cmd;

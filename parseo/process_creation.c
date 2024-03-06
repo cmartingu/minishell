@@ -14,17 +14,29 @@
 
 void	create_process(t_process *proceso, char **tok, int *i, int *qua)
 {
-	if (ft_strncmp(tok[*i], "<", ft_strlen(tok[*i])) == 0)
+	if (ft_strncmp(tok[*i], ">>", ft_strlen(tok[*i])) == 0)
 	{
 		(*i)++;
 		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
-			add_infile(proceso, tok[*i]);
+			add_outfile(proceso, tok[*i], 1);
+	}
+	else if (ft_strncmp(tok[*i], "<<", ft_strlen(tok[*i])) == 0)
+	{
+		(*i)++;
+		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
+			add_infile(proceso, tok[*i], 1);
+	}
+	else if (ft_strncmp(tok[*i], "<", ft_strlen(tok[*i])) == 0)
+	{
+		(*i)++;
+		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
+			add_infile(proceso, tok[*i], 0);
 	}
 	else if (ft_strncmp(tok[*i], ">", ft_strlen(tok[*i])) == 0)
 	{
 		(*i)++;
 		if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
-			add_outfile(proceso, tok[*i]);
+			add_outfile(proceso, tok[*i], 0);
 	}
 	else
 	{

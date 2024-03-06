@@ -38,7 +38,7 @@ void	print_process_list(t_process *process)
 			}
 		}
 		printf("Input Files:\n");
-		if (process->infile != NULL)
+		if (process->infile)
 		{
 			print_fileobject_list(process->infile);
 		}
@@ -47,7 +47,7 @@ void	print_process_list(t_process *process)
 			printf("\tNone\n");
 		}
 		printf("Output Files:\n");
-		if (process->outfile != NULL)
+		if (process->outfile)
 		{
 			print_fileobject_list(process->outfile);
 		}
@@ -126,10 +126,42 @@ int	count_process(t_process *procesos)
 	return (i);
 }
 
+t_pipex	*ini_pipex(int process_num, char **envp)
+{
+	t_pipex	*pipexx;
+
+	pipexx = malloc(sizeof(t_pipex));
+	pipexx->pipes = create_pipes(process_num - 1);
+	pipexx->c_env = envp;
+	pipexx->childs = malloc(process_num * sizeof(int));
+	return (pipexx);
+}
+
+int	decide_fork(t_process *process)
+{
+	if (strncmp(process->command[0], "export", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "echo", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "pwd", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "cd", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "unset", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "env", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "exit", ft_strlen(process->command[0])) == 0)
+		return (0);
+	else
+		return (1);
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	char		*comando;
 	t_process	*procesos;
+	t_pipex		*ejecutor;
 	char		**copy_env;
 	int			process_num;
 
@@ -180,6 +212,14 @@ int	main(int argc, char *argv[], char *env[])
 				procesos = tokenization_string(comando, copy_env);
 				print_process_list(procesos);
 				process_num = count_process(procesos);
+				if (process_num ==  1)
+					//Detectar si es builtin se hace en el padre, y sino fork y al ejecutor.
+				else
+				{
+					ejecutor = ini_pipex(process_num, copy_env);
+				}
+					//Fork para cada proceso. 
+
 			}
 		}
 	}

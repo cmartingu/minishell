@@ -33,6 +33,7 @@
 typedef struct s_fileobject
 {
 	char				*filename;
+	int					heredoc;
 	struct s_fileobject	*next;
 }						t_fileobject;
 
@@ -43,6 +44,14 @@ typedef struct s_process
 	t_fileobject		*outfile;
 	struct s_process	*next;
 }						t_process;
+
+typedef struct s_pipex
+{
+	char	**c_env;
+	int		**pipes;
+	int		*childs;
+
+}	t_pipex;
 
 typedef struct s_auxiliar
 {
@@ -77,8 +86,8 @@ void		ctrl_C_handler(int sig);
 void		ctrl_bar_handler(int sig);
 void		add_process_back(t_process *proceso, t_process *proceso2);
 void		ft_realloc_doble(t_process *proceso, char *str, int tam);
-void		add_infile(t_process *proceso, char *inf);
-void		add_outfile(t_process *proceso, char *outf);
+void		add_infile(t_process *proceso, char *inf, int flag);
+void		add_outfile(t_process *proceso, char *outf, int flag);
 void		add_cmd(t_process *proceso, char *cmd, int cmd_quant);
 void		free_arr(char ***arr);
 void		delete_quotation(char **cmd, char **copy_env);

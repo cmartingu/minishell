@@ -143,13 +143,12 @@ char	**copy_array(char **old)
 	return (new);
 }
 
-/*int main(int argc, char **argv, char **env)
+int main(int argc, char **argv, char **env)
 {
 	char	**copyEnv;
-	char	*strings[];
+	char	*strings[] = {"cd", "~/Downloads", NULL};
 
-	strings = {"cd", "~", NULL};
 	copyEnv = copy_array(env);
 	do_cd(strings, copyEnv);
 	do_pwd();
-}*/
+}
