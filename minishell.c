@@ -16,7 +16,7 @@ void	print_fileobject_list(t_fileobject *fileobject)
 {
 	while (fileobject != NULL)
 	{
-		printf("\tFilename: %s\n", fileobject->filename);
+		printf("\tFilename: %s		Flag: %d\n", fileobject->filename, fileobject->heredoc);
 		fileobject = fileobject->next;
 	}
 }
@@ -126,7 +126,7 @@ int	count_process(t_process *procesos)
 	return (i);
 }
 
-t_pipex	*ini_pipex(int process_num, char **envp)
+/*t_pipex	*ini_pipex(int process_num, char **envp)
 {
 	t_pipex	*pipexx;
 
@@ -135,7 +135,7 @@ t_pipex	*ini_pipex(int process_num, char **envp)
 	pipexx->c_env = envp;
 	pipexx->childs = malloc(process_num * sizeof(int));
 	return (pipexx);
-}
+}*/
 
 int	decide_fork(t_process *process)
 {
@@ -161,7 +161,7 @@ int	main(int argc, char *argv[], char *env[])
 {
 	char		*comando;
 	t_process	*procesos;
-	t_pipex		*ejecutor;
+	//t_pipex		*ejecutor;
 	char		**copy_env;
 	int			process_num;
 
@@ -212,7 +212,7 @@ int	main(int argc, char *argv[], char *env[])
 				procesos = tokenization_string(comando, copy_env);
 				print_process_list(procesos);
 				process_num = count_process(procesos);
-				if (process_num ==  1)
+				/*if (process_num ==  1)
 				{
 					//Comprobar heredocs y hacerlos
 					//comprobar inf y outf
@@ -224,7 +224,7 @@ int	main(int argc, char *argv[], char *env[])
 				else
 				{
 					ejecutor = ini_pipex(process_num, copy_env);//Fork para cada proceso. 
-				}
+				}*/
 			}
 		}
 	}
