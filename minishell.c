@@ -213,13 +213,18 @@ int	main(int argc, char *argv[], char *env[])
 				print_process_list(procesos);
 				process_num = count_process(procesos);
 				if (process_num ==  1)
-					//Detectar si es builtin se hace en el padre, y sino fork y al ejecutor.
+				{
+					//Comprobar heredocs y hacerlos
+					//comprobar inf y outf
+					if (decide_fork(procesos) == 0)
+						//ejecutar builtins
+					else
+						//Fork y ejecutar con execve.
+				}
 				else
 				{
-					ejecutor = ini_pipex(process_num, copy_env);
+					ejecutor = ini_pipex(process_num, copy_env);//Fork para cada proceso. 
 				}
-					//Fork para cada proceso. 
-
 			}
 		}
 	}
