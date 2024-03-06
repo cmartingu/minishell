@@ -29,6 +29,8 @@
 # include <curses.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "Libft/libft.h"
+# include "get_next_line/get_next_line.h"
 
 typedef struct s_fileobject
 {

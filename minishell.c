@@ -157,6 +157,31 @@ int	decide_fork(t_process *process)
 		return (1);
 }
 
+void	do_heredocs(t_process *proceso)
+{
+	t_fileobject	*aux;
+	char			*here;
+	char			*final;
+
+	aux = proceso->infile;
+	final = "\0";
+	while (aux != NULL)
+	{
+		if (aux->heredoc == 1)
+		{
+			here = get_next_line(0);
+			while (ft_strncmp(aux->filename, here, ft_strlen(aux->filename)) != 0)
+			{
+				final = ft_strjoin(final, here);
+				here = get_next_line(0);
+				printf("Final:%s  Here:%s\n", final, here);
+			}
+		}
+		aux = aux->next;
+	}
+	printf("%s\n", final);
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	char		*comando;
@@ -210,8 +235,9 @@ int	main(int argc, char *argv[], char *env[])
 			else
 			{
 				procesos = tokenization_string(comando, copy_env);
-				print_process_list(procesos);
+				//print_process_list(procesos);
 				process_num = count_process(procesos);
+				do_heredocs(procesos);
 				/*if (process_num ==  1)
 				{
 					//Comprobar heredocs y hacerlos

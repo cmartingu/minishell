@@ -38,12 +38,3 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	*aux = '\0';
 	return (sol);
 }
-
-/*#include <stdio.h>
-int main(void)
-{
-	char s1[] = "hola que tal";
-	char s2[] = ", como estas?";
-	printf("%s", ft_strjoin(s1, s2));
-	return (0);
-}*/
