@@ -35,7 +35,7 @@ char	*save_word_case(char **cmd)
 	if ((*cmd)[i] == '|')
 	{
 		(*cmd)++;
-		return (strdup("|"));
+		return (ft_strdup("|"));
 	}
 	while ((*cmd)[i] != '\0' && (*cmd)[i] != ' ' && (*cmd)[i] != '|' && \
 	(*cmd)[i] != '<' && (*cmd)[i] != '>')
@@ -61,9 +61,9 @@ char	*next_token(char **cmd)
 		if ((*cmd)[i] == '>')
 		{
 			(*cmd)++;
-			return (strdup(">>"));
+			return (ft_strdup(">>"));
 		}
-		return (strdup(">"));
+		return (ft_strdup(">"));
 	}
 	else if ((*cmd)[i] == '<')
 	{
@@ -71,9 +71,9 @@ char	*next_token(char **cmd)
 		if ((*cmd)[i] == '<')
 		{
 			(*cmd)++;
-			return (strdup("<<"));
+			return (ft_strdup("<<"));
 		}
-		return (strdup("<"));
+		return (ft_strdup("<"));
 	}
 	return (save_word_case(cmd));
 }

@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	save_expansion(char **aux, int *j, char **copy_env, char *name_var)
+void	save_expansion(char **aux, int *j, char **cp_env, char *name_var)
 {
 	char	*final_str;
 	int		i;
@@ -21,16 +21,16 @@ void	save_expansion(char **aux, int *j, char **copy_env, char *name_var)
 	i = 0;
 	final_str = NULL;
 	len = ft_strlen(name_var);
-	while (copy_env[i] != NULL)
+	while (cp_env[i] != NULL)
 	{
-		if (strncmp(name_var, copy_env[i], len) == 0 && copy_env[i][len] == '=')
+		if (ft_strncmp(name_var, cp_env[i], len) == 0 && cp_env[i][len] == '=')
 		{
-			final_str = strdup(copy_env[i] + len + 1);
+			final_str = ft_strdup(cp_env[i] + len + 1);
 			break ;
 		}
 		i++;
 	}
-	if (copy_env[i] == NULL)
+	if (cp_env[i] == NULL)
 		return ;
 	i = 0;
 	while (final_str[i] != '\0')
@@ -41,30 +41,30 @@ void	save_expansion(char **aux, int *j, char **copy_env, char *name_var)
 	}
 }
 
-void	expansion_print(char **aux, int *i, int *j, char *cmd, char **copy_env)
+void	expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env)
 {
-	char	*name_var;
 	int		auxiliar;
 	int		quit_chars;
 
-	(*i)++;
-	auxiliar = *i;
-	while (cmd[*i] != '\0' && cmd[*i] != '"' && \
-	cmd[*i] != ' ' && cmd[*i] != '$')
-		(*i)++;
-	auxiliar = (*i) - auxiliar;
-	name_var = malloc((auxiliar + 1));
-	name_var[auxiliar] = '\0';
-	(*i)--;
+	(aux->i)++;
+	auxiliar = (aux->i);
+	while (cmd[(aux->i)] != '\0' && cmd[(aux->i)] != '"' && \
+	cmd[(aux->i)] != ' ' && cmd[(aux->i)] != '$')
+		(aux->i)++;
+	auxiliar = (aux->i) - auxiliar;
+	aux->name_var = malloc((auxiliar + 1));
+	(aux->name_var)[auxiliar] = '\0';
+	(aux->i)--;
 	quit_chars = auxiliar + 1;
 	while (auxiliar--)
 	{
-		name_var[auxiliar] = cmd[*i];
-		(*i)--;
+		(aux->name_var)[auxiliar] = cmd[(aux->i)];
+		(aux->i)--;
 	}
 	while (quit_chars--)
-		(*i)++;
-	save_expansion(aux, j, copy_env, name_var);
+		(aux->i)++;
+	save_expansion(final, &(aux->j), cp_env, aux->name_var);
+	free(aux->name_var);
 }
 
 int	add_expansion(char *cmd, int *i, char **copy_env)
@@ -105,10 +105,10 @@ int *iter, int cant_iter)
 	name_len = ft_strlen(name_var);
 	while (copy_env[i] != NULL)
 	{
-		if (strncmp(name_var, copy_env[i], name_len) == 0 && \
+		if (ft_strncmp(name_var, copy_env[i], name_len) == 0 && \
 		copy_env[i][name_len] == '=')
 		{
-			final_str = strdup(copy_env[i] + name_len + 1);
+			final_str = ft_strdup(copy_env[i] + name_len + 1);
 			break ;
 		}
 		i++;

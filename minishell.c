@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-/*void	print_fileobject_list(t_fileobject *fileobject)
+void	print_fileobject_list(t_fileobject *fileobject)
 {
 	while (fileobject != NULL)
 	{
@@ -61,7 +61,7 @@ void	print_process_list(t_process *process)
 			printf("---- Next Process ----\n");
 		}
 	}
-}*/
+}
 
 char	**copy_array(char **old)
 {
@@ -178,6 +178,7 @@ int	main(int argc, char *argv[], char *env[])
 			else
 			{
 				procesos = tokenization_string(comando, copy_env);
+				print_process_list(procesos);
 				process_num = count_process(procesos);
 			}
 		}

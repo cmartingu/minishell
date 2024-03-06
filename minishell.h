@@ -44,6 +44,13 @@ typedef struct s_process
 	struct s_process	*next;
 }						t_process;
 
+typedef struct s_auxiliar
+{
+	int					i;
+	int					j;
+	char				*name_var;
+}						t_auxiliar;
+
 size_t		ft_strlen(const char *s);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			token_quant(char *cmd);
@@ -77,8 +84,8 @@ void		free_arr(char ***arr);
 void		delete_quotation(char **cmd, char **copy_env);
 void		delete_all_quot(t_process *process, char **copy_env);
 void		count_quotation(char **cmd, int *i, char quot);
-void		expansion_print(char **aux, int *i, int *j, \
-char *cmd, char **copy_env);
+void		expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env);
+void		save_expansion(char **aux, int *j, char **copy_env, char *name_var);
 void		create_process(t_process *proceso, char **tok, int *i, int *qua);
 void		save_final_quot(char **aux, char *cmd, int *i, int *j);
 t_process	*tokenization_string(char *cmd, char **copy_env);

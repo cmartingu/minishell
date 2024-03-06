@@ -90,30 +90,31 @@ void	aux_command_quot(char *cmd, int *i, int *j, char **aux)
 	}
 }
 
-void	command_quot(char *cmd, char **aux, char **copy_env)
+void	command_quot(char *cmd, char **final, char **copy_env)
 {
-	int	i;
-	int	j;
+	t_auxiliar	*aux;
 
-	j = 0;
-	i = 0;
-	while (cmd[i] != '\0')
+	aux = malloc(sizeof(t_auxiliar));
+	aux->j = 0;
+	aux->i = 0;
+	while (cmd[aux->i] != '\0')
 	{
-		if (cmd[i] == '$')
-			expansion_print(aux, &i, &j, cmd, copy_env);
-		if (cmd[i] == '"')
+		if (cmd[aux->i] == '$')
+			expansion_print(cmd, aux, final, copy_env);
+		if (cmd[aux->i] == '"')
 		{
-			i++;
-			while (cmd[i] != '"')
+			(aux->i)++;
+			while (cmd[aux->i] != '"')
 			{
-				if (cmd[i] == '$')
-					expansion_print(aux, &i, &j, cmd, copy_env);
+				if (cmd[aux->i] == '$')
+					expansion_print(cmd, aux, final, copy_env);
 				else
-					save_final_quot(aux, cmd, &i, &j);
+					save_final_quot(final, cmd, &(aux->i), &(aux->j));
 			}
 		}
 		else
-			aux_command_quot(cmd, &i, &j, aux);
-		i++;
+			aux_command_quot(cmd, &(aux->i), &(aux->j), final);
+		(aux->i)++;
 	}
+	free(aux);
 }
