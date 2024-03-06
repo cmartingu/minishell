@@ -112,25 +112,3 @@ char	*get_next_line(int fd)
 		return (free(buff), buff = NULL, sol);
 	return (ft_read(numbytes, &buff, &sol, fd));
 }
-
-int main(void)
-{
-	int fd;
-	char *c;
-	char *s;
-
-	fd = open("prueba.txt", O_RDONLY);
-	c = get_next_line(fd);
-	//s = get_next_line(fd);
-	printf("%s", c);
-	//printf("%s", s);
-	//printf("%s", get_next_line(fd));
-	//printf("%s", get_next_line(fd));
-	//printf("%s", get_next_line(fd));
-	//printf("%s", get_next_line(fd));
-	free(c);
-	//free(s);
-	close(fd);
-	//system ("leaks -q a.out");
-	return (0);
-}

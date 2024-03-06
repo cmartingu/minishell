@@ -20,6 +20,8 @@ SRC =	parseo/ctrl_handlers.c	\
 		parseo/process_creation.c	\
 		parseo/quotation_delete.c	\
 		parseo/expansion.c	\
+		get_next_line/get_next_line.c	\
+		get_next_line/get_next_line_utils.c	\
 		minishell.c
 OBJ = $(SRC:.c=.o)
 CFLAGS := -Wall -Werror -Wextra
