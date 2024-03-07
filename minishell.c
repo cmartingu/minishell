@@ -186,6 +186,26 @@ void	do_heredocs(t_process *proceso)
 	}
 }
 
+void	check_infiles(t_process *process)
+{
+	struct stat	buffer;
+	int		exist;
+	t_fileobject	*current_file;
+
+	current_file = process->infile;
+	while (current_file != NULL)
+	{
+		exist = stat(current_file->filename, &buffer);
+		if (exist != 0)
+		{
+			printf("Error: '%s' No such file or directory\n", current_file->filename);
+			return;
+		}
+		current_file = current_file->next;
+	}
+	printf("All infile objects exist. Dup Stdin to last infile\n");
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	char		*comando;
@@ -242,6 +262,7 @@ int	main(int argc, char *argv[], char *env[])
 				//print_process_list(procesos);
 				process_num = count_process(procesos);
 				do_heredocs(procesos);
+				check_infiles(procesos);
 				/*if (process_num ==  1)
 				{
 					//Comprobar heredocs y hacerlos
