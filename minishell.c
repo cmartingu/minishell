@@ -186,20 +186,22 @@ void	do_heredocs(t_process *proceso)
 	}
 }
 
-void	check_infiles(t_process *process)
+void	check_infiles(t_process *proceso)
 {
-	struct stat	buffer;
-	int		exist;
-	t_fileobject	*current_file;
+	struct stat buffer;
+	int	exist;
+	t_fileobject *current_file;
 
-	current_file = process->infile;
+	current_file = proceso->infile;
 	while (current_file != NULL)
 	{
-		exist = stat(current_file->filename, &buffer);
-		if (exist != 0)
+		if (current_file->heredoc == 0)
 		{
-			printf("Error: '%s' No such file or directory\n", current_file->filename);
-			return;
+			exist = stat(current_file->filename, &buffer);
+			if (exist != 0) {
+				printf("Error: '%s' No such file or directory\n", current_file->filename);
+				return;
+			}
 		}
 		current_file = current_file->next;
 	}
