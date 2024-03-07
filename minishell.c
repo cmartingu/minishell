@@ -186,26 +186,79 @@ void	do_heredocs(t_process *proceso)
 	}
 }
 
-void	check_infiles(t_process *proceso)
+int	check_infiles(t_process *process)
 {
-	struct stat buffer;
-	int	exist;
-	t_fileobject *current_file;
+    t_fileobject *current; 
+    int current_fd = -1;
+    int last_fd = -1;
 
-	current_file = proceso->infile;
-	while (current_file != NULL)
+    if (!process || !process->infile)
+		return (-1);
+	current = process->infile;
+    while (current != NULL)
 	{
-		if (current_file->heredoc == 0)
+        current_fd = open(current->filename, O_RDONLY);
+        if (current_fd == -1)
 		{
-			exist = stat(current_file->filename, &buffer);
-			if (exist != 0) {
-				printf("Error: '%s' No such file or directory\n", current_file->filename);
-				return;
-			}
-		}
-		current_file = current_file->next;
+            perror("Error al abrir el infile");
+			exit(1);
+        }
+		else
+		{
+            if (last_fd != -1)
+                close(last_fd);
+            last_fd = current_fd;
+        }
+        current = current->next;
+    }
+    return last_fd;
+}
+
+int	process_outfile(t_fileobject *current)
+{
+	int	current_fd;
+
+	current_fd = -1;
+	if (current->heredoc == 1)
+		current_fd = open(current->filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	else
+		current_fd = open(current->filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if (current_fd == -1)
+	{
+		perror("Error al abrir/crear el archivo");
+		exit(1);
 	}
-	printf("All infile objects exist. Dup Stdin to last infile\n");
+	return (current_fd);
+}
+
+int check_outfiles(t_process *process)
+{
+	t_fileobject *current;
+	int current_fd;
+	int fd;
+	int is_last;
+
+	current = process->outfile;
+	is_last = 0;
+    	fd = -1;
+	current_fd = -1;
+	if (!process || !process->outfile)
+		return -1;
+    	while (current != NULL)
+	{
+		if (current->next == NULL)
+			is_last = 1;
+		else
+			is_last = 0;
+		current_fd = process_outfile(current);
+	        if (is_last == 1)
+	            fd = current_fd;
+	        else if (current_fd != -1)
+	            close(current_fd);
+		printf("Last fd: %d\n", fd);
+		current = current->next;
+	}
+    	return (fd);
 }
 
 int	main(int argc, char *argv[], char *env[])
@@ -264,7 +317,8 @@ int	main(int argc, char *argv[], char *env[])
 				//print_process_list(procesos);
 				process_num = count_process(procesos);
 				do_heredocs(procesos);
-				check_infiles(procesos);
+				last_inf = check_infiles(procesos);
+				last_out = check_outfiles(procesos);
 				/*if (process_num ==  1)
 				{
 					//Comprobar heredocs y hacerlos
