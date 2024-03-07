@@ -161,25 +161,29 @@ void	do_heredocs(t_process *proceso)
 {
 	t_fileobject	*aux;
 	char			*here;
-	char			*final;
+	int				aux_fd;
 
 	aux = proceso->infile;
-	final = "\0";
 	while (aux != NULL)
 	{
 		if (aux->heredoc == 1)
 		{
+			aux_fd = open(aux->filename, O_RDWR | O_CREAT | O_TRUNC);
 			here = get_next_line(0);
-			while (ft_strncmp(aux->filename, here, ft_strlen(aux->filename)) != 0)
+			while (1)
 			{
-				final = ft_strjoin(final, here);
+				if (ft_strncmp(ft_strjoin(aux->filename, "\n"), here, \
+				ft_strlen(aux->filename) + 1) == 0)
+					break ;
+				write(aux_fd, here, ft_strlen(here));
+				free(here);
 				here = get_next_line(0);
-				printf("Final:%s  Here:%s\n", final, here);
 			}
+			free(here);
+			close(aux_fd);
 		}
 		aux = aux->next;
 	}
-	printf("%s\n", final);
 }
 
 int	main(int argc, char *argv[], char *env[])
