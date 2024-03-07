@@ -56,6 +56,33 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	return (aux1[i] - aux2[i]);
 }
 
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	size_t	tam;
+	char	*sol;
+	char	*aux;
+
+	tam = ft_strlen(s1) + ft_strlen(s2);
+	sol = malloc(tam + 1);
+	if (!sol)
+		return (0);
+	aux = sol;
+	while (*s1)
+	{
+		*aux = *s1;
+		aux++;
+		s1++;
+	}
+	while (*s2)
+	{
+		*aux = *s2;
+		aux++;
+		s2++;
+	}
+	*aux = '\0';
+	return (sol);
+}
+
 void	do_pwd(void)
 {
 	char	*buf;
@@ -95,6 +122,22 @@ void	do_cd(char **command, char **copyEnv)
 		{
 			perror("Minishell");
 		}
+	}
+	else if (command[1][0] == '~' && command[1][1] != '\0')
+	{
+		while (copyEnv[i] != NULL)
+		{
+			if (strncmp(copyEnv[i], "HOME=", 5) == 0)
+			{
+				home = copyEnv[i] + 5;
+				break ;
+			}
+			i++;
+		}
+		aux = strdup(command[1] + 1);
+		printf("Path ~ equals: %s\n", ft_strjoin(home, aux));
+		if (chdir(ft_strjoin(home, aux)))
+			perror("Minishell");
 	}
 	else
 	{
