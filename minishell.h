@@ -47,6 +47,13 @@ typedef struct s_process
 	struct s_process	*next;
 }						t_process;
 
+typedef struct s_last_file
+{
+	char		*filename;
+	int			heredoc;
+	int			fd;
+}	t_last_file;
+
 typedef struct s_pipex
 {
 	char	**c_env;

@@ -172,6 +172,7 @@ void	do_heredocs(t_process *proceso)
 }
 
 
+
 int	check_infiles(t_process *process)
 {
 	t_fileobject	*current;
@@ -265,8 +266,8 @@ t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
 	if (!pipexx->childs)
 		perror("Minishell");
 	pipexx->c_env = envp;
-	pipexx->last_out = check_outfiles(proceso);
-	pipexx->last_inf = check_infiles(proceso);
+	pipexx->last_out = check_outfiles(proceso); //ponerlo como -1;
+	pipexx->last_inf = check_infiles(proceso); //ponerlo como -1;
 	return (pipexx);
 }
 
@@ -347,6 +348,7 @@ int	main(int argc, char *argv[], char *env[])
 							ejecutar(ejecutor->c_env, path, procesos->command);
 						}
 						waitpid(ejecutor->childs[0], &status, 0);
+						
 					}
 					else
 					{
@@ -368,8 +370,8 @@ int	main(int argc, char *argv[], char *env[])
 							do_pwd();
 						else if (strncmp(procesos->command[0], "cd", ft_strlen(procesos->command[0])) == 0)
 							do_cd(procesos->command, ejecutor->c_env);
-						//else if (strncmp(process->command[0], "unset", ft_strlen(process->command[0])) == 0)
-						//	do_unset();
+						else if (strncmp(procesos->command[0], "unset", ft_strlen(procesos->command[0])) == 0)
+							do_unset(procesos->command, ejecutor->c_env);
 						else if (strncmp(procesos->command[0], "env", ft_strlen(procesos->command[0])) == 0)
 							do_env(ejecutor->c_env);
 						else if (strncmp(procesos->command[0], "exit", ft_strlen(procesos->command[0])) == 0)
