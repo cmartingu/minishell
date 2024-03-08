@@ -63,28 +63,6 @@ void	print_process_list(t_process *process)
 	}
 }*/
 
-char	**copy_array(char **old)
-{
-	int		len;
-	int		i;
-	char	**new;
-
-	len = 0;
-	while (old[len])
-		len++;
-	new = malloc((len + 1) * sizeof(char *));
-	if (new == NULL)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		new[i] = ft_strdup(old[i]);
-		i++;
-	}
-	new[i] = NULL;
-	return (new);
-}
-
 t_process	*tokenization_string(char *cmd, char **copy_env)
 {
 	t_process		*process;
@@ -126,16 +104,6 @@ int	count_process(t_process *procesos)
 	return (i);
 }
 
-/*t_pipex	*ini_pipex(int process_num, char **envp)
-{
-	t_pipex	*pipexx;
-
-	pipexx = malloc(sizeof(t_pipex));
-	pipexx->pipes = create_pipes(process_num - 1);
-	pipexx->c_env = envp;
-	pipexx->childs = malloc(process_num * sizeof(int));
-	return (pipexx);
-}*/
 
 int	decide_fork(t_process *process)
 {
@@ -286,15 +254,31 @@ int	check_outfiles(t_process *process)
 	return (fd);
 }
 
+t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
+{
+	t_pipex	*pipexx;
+
+	pipexx = malloc(sizeof(t_pipex));
+	if (!pipexx)
+		perror("Minishell");
+	pipexx->pipes = create_pipes(process_num - 1);
+	pipexx->childs = malloc(process_num * sizeof(int));
+	if (!pipexx->childs)
+		perror("Minishell");
+	pipexx->c_env = envp;
+	pipexx->last_out = check_outfiles(proceso);
+	pipexx->last_inf = check_infiles(proceso);
+	return (pipexx);
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	char		*comando;
 	t_process	*procesos;
-	//t_pipex		*ejecutor;
+	t_pipex		*ejecutor;
 	char		**copy_env;
 	int			process_num;
-	int			last_inf;
-	int			last_out;
+	char		*path;
 
 	argc = 0;
 	argv = NULL;
@@ -345,11 +329,27 @@ int	main(int argc, char *argv[], char *env[])
 				process_num = count_process(procesos);
 				if (process_num ==  1)
 				{
+
 					do_heredocs(procesos);
-					last_inf = check_infiles(procesos);
-					last_out = check_outfiles(procesos);
+					ejecutor = ini_pipex(process_num, copy_env, procesos);
 					if (decide_fork(procesos) == 1)
-						//Fork y ejecutar con execve.
+					{
+						ejecutor->childs[0] = fork();
+						if (ejecutor->childs[0] == 0)
+						{
+							if (ejecutor->last_inf != -1)
+								dup2(ejecutor->last_inf, STDIN_FILENO);
+							if (ejecutor->last_out != -1)
+								dup2(ejecutor->last_out, STDOUT_FILENO);
+							close_pipes();
+							path = find_path(ejecutor->c_env, procesos->command);
+							ejecutar(ejecutor->c_env, path, procesos->command);
+						}
+						wait(NULL);
+					}
+					else
+					{
+					}
 				}
 				/*else
 				{

@@ -52,7 +52,8 @@ typedef struct s_pipex
 	char	**c_env;
 	int		**pipes;
 	int		*childs;
-
+	int		last_out;
+	int		last_inf;
 }	t_pipex;
 
 typedef struct s_auxiliar
@@ -118,5 +119,10 @@ char	**do_export(char **comando, char **copyEnv);
 void	do_pwd(void);
 void	do_unset(char *command, char **env);
 
+void	ejecutar(char *envp[], char *path, char **comando);
+char	*path_access(char **possible_paths, char **full_command, char *comand);
+char	*find_path(char *envp[], char **comand);
+int		**create_pipes(int quant);
+void	close_pipes(t_pipex *pipexx);
 
 #endif

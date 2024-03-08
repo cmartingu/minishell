@@ -16,7 +16,11 @@ int	**create_pipes(int quant)
 {
 	int	**pipes;
 
+	if (quant == 0)
+		return (NULL);
 	pipes = malloc(quant * sizeof(int *));
+	if (!pipes)
+		perror("Minishell");
 	while (quant--)
 	{
 		pipes[quant] = malloc(2);
@@ -29,7 +33,7 @@ int	**create_pipes(int quant)
 	return (pipes);
 }
 
-void	close_pipes(t_pipex *pipexx)
+/*void	close_pipes(t_pipex *pipexx)
 {
 	int	i;
 
@@ -112,4 +116,4 @@ int	main(int arg, char *argvv[], char *envp[])
 		i++;
 	}
 	return (WEXITSTATUS(status));
-}
+}*/

@@ -27,6 +27,9 @@ SRC =	parseo/ctrl_handlers.c	\
 		builtins/export.c  \
 		builtins/pwd.c  \
 		builtins/unset.c \
+		executor/ejecutar.c	\
+		executor/path.c	\
+		executor/pipex.c	\
 		get_next_line/get_next_line.c	\
 		get_next_line/get_next_line_utils.c	\
 		minishell.c

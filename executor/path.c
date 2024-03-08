@@ -22,10 +22,9 @@ char	*path_access(char **possible_paths, char **full_command, char *comand)
 	return (path);
 }
 
-char	*find_path(char *envp[], char *comand)
+char	*find_path(char *envp[], char **comand)
 {
 	int		i;
-	char	**full_command;
 	char	*path;
 	char	**possible_paths;
 
@@ -33,10 +32,9 @@ char	*find_path(char *envp[], char *comand)
 	while (envp[i] && ft_strncmp("PATH", envp[i], 4) != 0)
 		i++;
 	if (envp[i] == NULL)
-		return (comand);
-	full_command = ft_split(comand, ' ');
+		return (comand[0]);
 	path = envp[i] + 5;
 	possible_paths = ft_split(path, ':');
-	path = path_access(possible_paths, full_command, comand);
+	path = path_access(possible_paths, comand, comand[0]);
 	return (path);
 }
