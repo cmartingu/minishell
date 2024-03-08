@@ -248,7 +248,6 @@ int	check_outfiles(t_process *process)
 			fd = current_fd;
 		else if (current_fd != -1)
 			close(current_fd);
-		printf("Last fd: %d\n", fd);
 		current = current->next;
 	}
 	return (fd);
@@ -279,6 +278,10 @@ int	main(int argc, char *argv[], char *env[])
 	char		**copy_env;
 	int			process_num;
 	char		*path;
+	int			status;
+	int			original_stdin;
+	int			original_stdout;
+	//int			salida_std;
 
 	argc = 0;
 	argv = NULL;
@@ -316,16 +319,15 @@ int	main(int argc, char *argv[], char *env[])
 			add_history(comando);
 			if (strncmp(comando, "history -c", strlen(comando)) == 0)
 				rl_clear_history();
-			else if (strncmp(comando, "exit", 4) == 0)
+			/*else if (strncmp(comando, "exit", 4) == 0)
 			{
 				printf("exit\n");
 				//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
 				exit(0);
-			}
+			}*/
 			else
 			{
 				procesos = tokenization_string(comando, copy_env);
-				//print_process_list(procesos);
 				process_num = count_process(procesos);
 				if (process_num ==  1)
 				{
@@ -341,14 +343,39 @@ int	main(int argc, char *argv[], char *env[])
 								dup2(ejecutor->last_inf, STDIN_FILENO);
 							if (ejecutor->last_out != -1)
 								dup2(ejecutor->last_out, STDOUT_FILENO);
-							close_pipes();
 							path = find_path(ejecutor->c_env, procesos->command);
 							ejecutar(ejecutor->c_env, path, procesos->command);
 						}
-						wait(NULL);
+						waitpid(ejecutor->childs[0], &status, 0);
 					}
 					else
 					{
+						if (ejecutor->last_inf != -1)
+						{
+							original_stdin = dup(STDIN_FILENO);
+							dup2(ejecutor->last_inf, STDIN_FILENO);
+						}
+						if (ejecutor->last_out != -1)
+						{
+							original_stdout = dup(STDOUT_FILENO);
+							dup2(ejecutor->last_out, STDOUT_FILENO);
+						}
+						if (strncmp(procesos->command[0], "export", ft_strlen(procesos->command[0])) == 0)
+							do_export(procesos->command, ejecutor->c_env);
+						else if (strncmp(procesos->command[0], "echo", ft_strlen(procesos->command[0])) == 0)
+							do_echo(procesos->command);
+						else if (strncmp(procesos->command[0], "pwd", ft_strlen(procesos->command[0])) == 0)
+							do_pwd();
+						else if (strncmp(procesos->command[0], "cd", ft_strlen(procesos->command[0])) == 0)
+							do_cd(procesos->command, ejecutor->c_env);
+						//else if (strncmp(process->command[0], "unset", ft_strlen(process->command[0])) == 0)
+						//	do_unset();
+						else if (strncmp(procesos->command[0], "env", ft_strlen(procesos->command[0])) == 0)
+							do_env(ejecutor->c_env);
+						else if (strncmp(procesos->command[0], "exit", ft_strlen(procesos->command[0])) == 0)
+							do_exit(procesos->command);
+						dup2(original_stdin, STDIN_FILENO);
+						dup2(original_stdout, STDOUT_FILENO);
 					}
 				}
 				/*else

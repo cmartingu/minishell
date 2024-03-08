@@ -35,13 +35,16 @@ void	is_alnumdeverdad(char *str)
 
 void	do_exit(char **comando)
 {
+	if (comando[1] == NULL)
+	{
+		printf("exit\n");
+		exit(0);
+	}
 	if (comando[2] != NULL)
 	{
 		printf("Error: too many arguments\n");
 		exit(1);
 	}
-	if (comando[1] == NULL)
-		exit(0);
 	is_alnumdeverdad(comando[1]);
 	exit(ft_atoi(comando[1]));
 }

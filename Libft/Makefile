@@ -33,19 +33,22 @@ INCLUDE = libft.h
 all: $(NAME)
 
 $(NAME): $(OBJECTS) $(INCLUDE)
-	ar -crs $(NAME) $(OBJECTS)
+	@ar -rcs $(NAME) $(OBJECTS)
+
+%.o: %.c
+	@$(CC) -c $< -o $@ $(CFLAGS)
 
 bonus: $(NAME_BONUS)
 
 $(NAME_BONUS): $(OBJECTS) $(OBJECTS_BONUS) $(INCLUDE)
-	ar -rcs $(NAME) $(OBJECTS) $(OBJECTS_BONUS)
-	ar -rcs $(NAME_BONUS) $(OBJECTS) $(OBJECTS_BONUS)
+	@ar -rcs $(NAME) $(OBJECTS) $(OBJECTS_BONUS)
+	@ar -rcs $(NAME_BONUS) $(OBJECTS) $(OBJECTS_BONUS)
 
 clean:
-	rm -f $(OBJECTS) $(OBJECTS_BONUS)
+	@rm -f $(OBJECTS) $(OBJECTS_BONUS)
 
 fclean: clean
-	rm -f $(NAME) $(NAME_BONUS)
+	@rm -f $(NAME) $(NAME_BONUS)
 
 re: fclean all
 

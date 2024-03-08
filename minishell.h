@@ -117,7 +117,7 @@ char	**copy_array(char **old);
 int		check_export(const char *str);
 char	**do_export(char **comando, char **copyEnv);
 void	do_pwd(void);
-void	do_unset(char *command, char **env);
+void	do_unset(char **command, char **env);
 
 void	ejecutar(char *envp[], char *path, char **comando);
 char	*path_access(char **possible_paths, char **full_command, char *comand);

@@ -12,23 +12,28 @@
 
 #include "../minishell.h"
 
-void	do_unset(char *command, char **env)
+void	do_unset(char **command, char **env)
 {
-	char	*var;
+	int	i;
 
-	var = ft_substr(command, 6, ft_strlen(command) - 6);
-	while (*env != NULL)
+	i = 1;
+	while (command[i] != NULL)
 	{
-		if (ft_strncmp(*env, var, ft_strlen(var)) == 0 && \
-		(*env)[ft_strlen(var)] == '=')
+		while (*env != NULL)
 		{
-			while (*env != NULL)
+			if (ft_strncmp(*env, command[i], ft_strlen(command[i])) == 0 && \
+			(*env)[ft_strlen(command[i])] == '=')
 			{
-				*env = *(env + 1);
-				env++;
+				while (*env != NULL)
+				{
+					*env = *(env + 1);
+					env++;
+				}
+				break ;
 			}
-			break ;
+			env++;
 		}
-		env++;
+		i++;
 	}
+
 }

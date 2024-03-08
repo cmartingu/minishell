@@ -43,19 +43,21 @@ CC := cc
 all: $(NAME)
 
 $(NAME): $(OBJ) Libft/libft.a
-	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS) Libft/libft.a
+	@echo ".....Making Minishell....."
+	@$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS) Libft/libft.a
 
 %.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+	@$(CC) -c $< -o $@ $(CFLAGS)
 
 Libft/libft.a:
-		make -C Libft/
+	@echo ".....Making Libft...."
+	@make -C Libft/
 
 clean:
-	$(REMOVE) $(OBJ)
-	make -C Libft/ fclean
+	@$(REMOVE) $(OBJ)
+	@make -C Libft/ fclean
 
 fclean: clean
-	$(REMOVE) $(NAME)
+	@$(REMOVE) $(NAME)
 
 re: fclean all
