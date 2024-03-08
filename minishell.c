@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	print_fileobject_list(t_fileobject *fileobject)
+/*void	print_fileobject_list(t_fileobject *fileobject)
 {
 	while (fileobject != NULL)
 	{
@@ -61,7 +61,7 @@ void	print_process_list(t_process *process)
 			printf("---- Next Process ----\n");
 		}
 	}
-}
+}*/
 
 char	**copy_array(char **old)
 {
@@ -188,30 +188,32 @@ void	do_heredocs(t_process *proceso)
 
 int	check_infiles(t_process *process)
 {
-    t_fileobject *current; 
-    int current_fd = -1;
-    int last_fd = -1;
+	t_fileobject	*current;
+	int				current_fd;
+	int				last_fd;
 
-    if (!process || !process->infile)
+	current_fd = -1;
+	last_fd = -1;
+	if (!process || !process->infile)
 		return (-1);
 	current = process->infile;
-    while (current != NULL)
+	while (current != NULL)
 	{
-        current_fd = open(current->filename, O_RDONLY);
-        if (current_fd == -1)
+		current_fd = open(current->filename, O_RDONLY);
+		if (current_fd == -1)
 		{
-            perror("Error al abrir el infile");
+			perror("Error al abrir el infile");
 			exit(1);
-        }
+		}
 		else
 		{
-            if (last_fd != -1)
-                close(last_fd);
-            last_fd = current_fd;
-        }
-        current = current->next;
-    }
-    return last_fd;
+			if (last_fd != -1)
+				close(last_fd);
+			last_fd = current_fd;
+		}
+		current = current->next;
+	}
+	return (last_fd);
 }
 
 int	process_outfile(t_fileobject *current)
@@ -220,9 +222,11 @@ int	process_outfile(t_fileobject *current)
 
 	current_fd = -1;
 	if (current->heredoc == 1)
-		current_fd = open(current->filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+		current_fd = open(current->filename, O_WRONLY \
+	| O_CREAT | O_APPEND, 0666);
 	else
-		current_fd = open(current->filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		current_fd = open(current->filename, O_WRONLY \
+	| O_CREAT | O_TRUNC, 0666);
 	if (current_fd == -1)
 	{
 		perror("Error al abrir/crear el archivo");
@@ -231,34 +235,34 @@ int	process_outfile(t_fileobject *current)
 	return (current_fd);
 }
 
-int check_outfiles(t_process *process)
+int	check_outfiles(t_process *process)
 {
-	t_fileobject *current;
-	int current_fd;
-	int fd;
-	int is_last;
+	t_fileobject	*current;
+	int				current_fd;
+	int				fd;
+	int				is_last;
 
+	fd = -1;
 	current = process->outfile;
 	is_last = 0;
-    	fd = -1;
 	current_fd = -1;
 	if (!process || !process->outfile)
-		return -1;
-    	while (current != NULL)
+		return (-1);
+	while (current != NULL)
 	{
 		if (current->next == NULL)
 			is_last = 1;
 		else
 			is_last = 0;
 		current_fd = process_outfile(current);
-	        if (is_last == 1)
-	            fd = current_fd;
-	        else if (current_fd != -1)
-	            close(current_fd);
+		if (is_last == 1)
+			fd = current_fd;
+		else if (current_fd != -1)
+			close(current_fd);
 		printf("Last fd: %d\n", fd);
 		current = current->next;
 	}
-    	return (fd);
+	return (fd);
 }
 
 int	main(int argc, char *argv[], char *env[])
@@ -268,6 +272,8 @@ int	main(int argc, char *argv[], char *env[])
 	//t_pipex		*ejecutor;
 	char		**copy_env;
 	int			process_num;
+	int			last_inf;
+	int			last_out;
 
 	argc = 0;
 	argv = NULL;
