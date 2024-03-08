@@ -10,114 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/resource.h>
-#include <sys/stat.h>
-#include <signal.h>
-#include <dirent.h>
-#include <string.h>
-#include <termios.h>
-#include <curses.h>
+#include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
-		i++;
-	return (i);
-}
-
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t			i;
-	unsigned char	*aux1;
-	unsigned char	*aux2;
-
-	aux1 = (unsigned char *)s1;
-	aux2 = (unsigned char *)s2;
-	i = 0;
-	if (n == 0)
-		return (0);
-	while ((aux1[i] == aux2[i]) && (i < (n - 1)))
-	{
-		if (aux1[i] == '\0' && aux2[i] == '\0')
-			return (0);
-		i++;
-	}
-	return (aux1[i] - aux2[i]);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	tam;
-	char	*sol;
-	char	*aux;
-
-	tam = ft_strlen(s1) + ft_strlen(s2);
-	sol = malloc(tam + 1);
-	if (!sol)
-		return (0);
-	aux = sol;
-	while (*s1)
-	{
-		*aux = *s1;
-		aux++;
-		s1++;
-	}
-	while (*s2)
-	{
-		*aux = *s2;
-		aux++;
-		s2++;
-	}
-	*aux = '\0';
-	return (sol);
-}
-
-void	do_pwd(void)
-{
-	char	*buf;
-
-	buf = getcwd(NULL, 0);
-	if (buf != NULL)
-	{
-		printf("%s\n", buf);
-		free(buf);
-	}
-	else
-	{
-		perror("Minishell error:");
-	}
-}
 
 void	do_cd(char **command, char **copyEnv)
 {
 	int		i;
 	char	*home;
+	char	*aux;
 
 	i = 0;
-	do_pwd();
+	home = NULL;
 	if (!(command[1]) || (command[1][0] == '~' && command[1][1] == '\0'))
 	{
 		while (copyEnv[i] != NULL)
 		{
-			if (strncmp(copyEnv[i], "HOME=", 5) == 0)
+			if (ft_strncmp(copyEnv[i], "HOME=", 5) == 0)
 			{
 				home = copyEnv[i] + 5;
 				break ;
 			}
 			i++;
 		}
-		printf("Path Home: %s\n", home);
 		if (home && chdir(home) != 0)
 		{
 			perror("Minishell");
@@ -127,71 +41,22 @@ void	do_cd(char **command, char **copyEnv)
 	{
 		while (copyEnv[i] != NULL)
 		{
-			if (strncmp(copyEnv[i], "HOME=", 5) == 0)
+			if (ft_strncmp(copyEnv[i], "HOME=", 5) == 0)
 			{
 				home = copyEnv[i] + 5;
 				break ;
 			}
 			i++;
 		}
-		aux = strdup(command[1] + 1);
-		printf("Path ~ equals: %s\n", ft_strjoin(home, aux));
+		aux = ft_strdup(command[1] + 1);
 		if (chdir(ft_strjoin(home, aux)))
 			perror("Minishell");
 	}
 	else
 	{
-		printf("Path Comand: %s\n", command[1]);
 		if (chdir(command[1]) != 0)
 		{
 			perror("Minishell");
 		}
 	}
-}
-
-char	*ft_strdup(const char *s1)
-{
-	size_t		len;
-	char		*sol;
-
-	len = ft_strlen(s1);
-	sol = malloc(len + 1);
-	if (!sol)
-		return (0);
-	sol[len] = '\0';
-	while (len--)
-		sol[len] = s1[len];
-	return (sol);
-}
-
-char	**copy_array(char **old)
-{
-	int		len;
-	int		i;
-	char	**new;
-
-	len = 0;
-	while (old[len])
-		len++;
-	new = malloc((len + 1) * sizeof(char *));
-	if (new == NULL)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		new[i] = ft_strdup(old[i]);
-		i++;
-	}
-	new[i] = NULL;
-	return (new);
-}
-
-int main(int argc, char **argv, char **env)
-{
-	char	**copyEnv;
-	char	*strings[] = {"cd", "~/Downloads", NULL};
-
-	copyEnv = copy_array(env);
-	do_cd(strings, copyEnv);
-	do_pwd();
 }

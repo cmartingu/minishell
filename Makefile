@@ -20,6 +20,13 @@ SRC =	parseo/ctrl_handlers.c	\
 		parseo/process_creation.c	\
 		parseo/quotation_delete.c	\
 		parseo/expansion.c	\
+		builtins/cd.c  \
+		builtins/echo.c  \
+		builtins/env.c  \
+		builtins/exit.c  \
+		builtins/export.c  \
+		builtins/pwd.c  \
+		builtins/unset.c \
 		get_next_line/get_next_line.c	\
 		get_next_line/get_next_line_utils.c	\
 		minishell.c

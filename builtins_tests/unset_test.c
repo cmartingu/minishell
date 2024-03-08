@@ -10,13 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <termios.h>
+#include <curses.h>
 
-void	do_env(char **env)
+void	do_unset(char *command, char **env)
 {
+	char	*var;
+
+	var = ft_substr(comando, 6, ft_strlen(comando) - 6);
 	while (*env != NULL)
 	{
-		printf("%s\n", *env);
+		if (ft_strncmp(*env, var, ft_strlen(var)) == 0 && \
+		(*env)[ft_strlen(var)] == '=')
+		{
+			while (*env != NULL)
+			{
+				*env = *(env + 1);
+				env++;
+			}
+			break ;
+		}
 		env++;
 	}
 }

@@ -157,6 +157,21 @@ int	decide_fork(t_process *process)
 		return (1);
 }
 
+int	last_heredoc(t_fileobject *file)
+{
+	t_fileobject	*aux;
+
+	aux = file;
+	aux = aux->next;
+	while (aux != NULL)
+	{
+		if (aux->heredoc == 1)
+			return (0);
+		aux = aux->next;
+	}
+	return (1);
+}
+
 void	do_heredocs(t_process *proceso)
 {
 	t_fileobject	*aux;
@@ -168,7 +183,7 @@ void	do_heredocs(t_process *proceso)
 	{
 		if (aux->heredoc == 1)
 		{
-			aux_fd = open(aux->filename, O_RDWR | O_CREAT | O_TRUNC);
+			aux_fd = open(aux->filename, O_RDWR | O_CREAT | O_TRUNC, 0666);
 			here = get_next_line(0);
 			while (1)
 			{
@@ -180,11 +195,14 @@ void	do_heredocs(t_process *proceso)
 				here = get_next_line(0);
 			}
 			free(here);
+			if (last_heredoc(aux) == 0)
+				unlink(aux->filename);
 			close(aux_fd);
 		}
 		aux = aux->next;
 	}
 }
+
 
 int	check_infiles(t_process *process)
 {
@@ -199,17 +217,20 @@ int	check_infiles(t_process *process)
 	current = process->infile;
 	while (current != NULL)
 	{
-		current_fd = open(current->filename, O_RDONLY);
-		if (current_fd == -1)
+		if (current->heredoc == 0 || ((current->heredoc == 1) && last_heredoc(current) == 1))
 		{
-			perror("Error al abrir el infile");
-			exit(1);
-		}
-		else
-		{
-			if (last_fd != -1)
-				close(last_fd);
-			last_fd = current_fd;
+			current_fd = open(current->filename, O_RDONLY);
+			if (current_fd == -1)
+			{
+				perror("Error al abrir el infile");
+				exit(1);
+			}
+			else
+			{
+				if (last_fd != -1)
+					close(last_fd);
+				last_fd = current_fd;
+			}
 		}
 		current = current->next;
 	}
@@ -322,19 +343,15 @@ int	main(int argc, char *argv[], char *env[])
 				procesos = tokenization_string(comando, copy_env);
 				//print_process_list(procesos);
 				process_num = count_process(procesos);
-				do_heredocs(procesos);
-				last_inf = check_infiles(procesos);
-				last_out = check_outfiles(procesos);
-				/*if (process_num ==  1)
+				if (process_num ==  1)
 				{
-					//Comprobar heredocs y hacerlos
-					//comprobar inf y outf
-					if (decide_fork(procesos) == 0)
-						//ejecutar builtins
-					else
+					do_heredocs(procesos);
+					last_inf = check_infiles(procesos);
+					last_out = check_outfiles(procesos);
+					if (decide_fork(procesos) == 1)
 						//Fork y ejecutar con execve.
 				}
-				else
+				/*else
 				{
 					ejecutor = ini_pipex(process_num, copy_env);//Fork para cada proceso. 
 				}*/

@@ -10,32 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/resource.h>
-#include <sys/stat.h>
-#include <signal.h>
-#include <dirent.h>
-#include <string.h>
-#include <termios.h>
-#include <curses.h>
+#include "../minishell.h"
+
+void	is_alnumdeverdad(char *str)
+{
+	int	i;
+
+	if (str[0] == '\0')
+	{
+		printf("Error: Numeric argument required\n");
+		exit(255);
+	}
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (ft_isdigit(str[i]) == 0)
+		{
+			printf("Error: Numeric argument required\n");
+			exit(255);
+		}
+		i++;
+	}
+}
 
 void	do_exit(char **comando)
 {
 	if (comando[2] != NULL)
 	{
-		printf("Error: too many arguments");
+		printf("Error: too many arguments\n");
 		exit(1);
 	}
-	if (isnum(comando[1]) == 0)
-		exit(comando[1]);
-	else
-	{
-		printf("Error: Numeric argument required");
-		exit(255);
-	}
+	if (comando[1] == NULL)
+		exit(0);
+	is_alnumdeverdad(comando[1]);
+	exit(ft_atoi(comando[1]));
 }

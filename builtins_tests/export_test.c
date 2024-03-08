@@ -10,10 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <termios.h>
+#include <curses.h>
 
+void	print_arr(char **arr)
+{
+	int	i;
 
-void	free_array(char **arr)
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		printf("%s,%d\n", arr[i], i);
+		i++;
+	}
+	printf("\n");
+}
+
+void	free_arr(char **arr)
 {
 	int	i;
 
@@ -24,6 +48,51 @@ void	free_array(char **arr)
 		i++;
 	}
 	free(arr);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	size_t		len;
+	char		*sol;
+
+	len = ft_strlen(s1);
+	sol = malloc(len + 1);
+	if (!sol)
+		return (0);
+	sol[len] = '\0';
+	while (len--)
+		sol[len] = s1[len];
+	return (sol);
+}
+
+int	ft_isalpha(int c)
+{
+	if (((c >= 65) && (c <= 90)) || ((c >= 97) && (c <= 122)))
+		return (1);
+	else
+		return (0);
+}
+
+int	ft_isalnum(int c)
+{
+	if (((c >= 65) && (c <= 90)) || ((c >= 97) && (c <= 122)))
+		return (1);
+	else if ((c >= 48) && (c <= 57))
+		return (1);
+	else
+		return (0);
 }
 
 char	**insert_str(char **old, char *str)
@@ -46,7 +115,7 @@ char	**insert_str(char **old, char *str)
 	}
 	new[i] = str;
 	new[i + 1] = NULL;
-	free_array(old);
+	free_arr(old);
 	return (new);
 }
 
@@ -95,6 +164,7 @@ int	check_export(const char *str)
 
 char	**do_export(char **comando, char **copyEnv)
 {
+	int	pos;
 	int	i;
 
 	i = 0;
@@ -125,3 +195,12 @@ char	**do_export(char **comando, char **copyEnv)
 	}
 	return (copyEnv);
 }
+
+/*int main(int argc, char **argv, char **env)
+{
+	char **copyEnv;
+	char *strings[] = {"export",  NULL};
+	copyEnv = copy_array(env);
+	copyEnv = do_export(strings, copyEnv);
+	
+}*/

@@ -10,13 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <termios.h>
+#include <curses.h>
 
-void	do_env(char **env)
+void	do_pwd(void)
 {
-	while (*env != NULL)
+	char	*buf;
+
+	buf = getcwd(NULL, 0);
+	if (buf != NULL)
 	{
-		printf("%s\n", *env);
-		env++;
+		printf("%s\n", buf);
+		free(buf);
+	}
+	else
+	{
+		perror("Minishell error:");
 	}
 }

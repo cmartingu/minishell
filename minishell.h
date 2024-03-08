@@ -106,4 +106,17 @@ t_process	*procesos(int nb, char **tokens);
 extern void	rl_clear_history(void);
 extern void	rl_replace_line(const char *b, int s);
 
+void	do_cd(char **command, char **copyEnv);
+void	do_echo(char **command);
+void	do_env(char **env);
+void	do_exit(char **comando);
+void	free_array(char **arr);
+char	**insert_str(char **old, char *str);
+char	**copy_array(char **old);
+int		check_export(const char *str);
+char	**do_export(char **comando, char **copyEnv);
+void	do_pwd(void);
+void	do_unset(char *command, char **env);
+
+
 #endif
