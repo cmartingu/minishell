@@ -146,14 +146,14 @@ int	middle_childs(t_macro_pipex *common, t_process *procesos, int process_num)
 				exit(1);
 			procesos->last_out = check_outfiles(procesos);
 			if (procesos->last_inf == -1 && process_num != aux_num - 1)
-				dup2((common->pipes)[0][0], STDIN_FILENO); //cambiar el 0 por j
+				dup2((common->pipes)[j - 1][0], STDIN_FILENO);
 			else if (procesos->last_inf != -1)
 			{
 				dup2(procesos->last_inf, STDIN_FILENO);
 				close(procesos->last_inf);
 			}
 			if (procesos->last_out == -1 && process_num != 0)
-				dup2((common->pipes)[0][1], STDOUT_FILENO); //cambiar el 0 por (j - 1)
+				dup2((common->pipes)[j][1], STDOUT_FILENO);
 			else if (procesos->last_out != -1)
 			{
 				dup2(procesos->last_out, STDOUT_FILENO);
