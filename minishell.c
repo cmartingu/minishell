@@ -74,7 +74,7 @@ int	decide_fork(t_process *process)
 		return (1);
 }
 
-void	close_pipes(t_pipex *pipexx, int process_num)
+void	close_pipes(t_macro_pipex *pipexx, int process_num)
 {
 	int	i;
 
@@ -107,7 +107,7 @@ t_pipex	*ini_pipex(int process_num, char ***envp, t_process *proceso)
 	return (pipexx);
 }
 
-/*t_macro_pipex	*ini_macro_pipex(t_process *procesos, int process_num, char **envp)
+t_macro_pipex	*ini_macro_pipex(int process_num, char ***envp)
 {
 	t_macro_pipex	*pipexx;
 
@@ -119,13 +119,75 @@ t_pipex	*ini_pipex(int process_num, char ***envp, t_process *proceso)
 	if (!pipexx->childs)
 		perror("Minishell");
 	pipexx->c_env = envp;
-	return ();
+	return (pipexx);
 }
 
-void	exe_procesos(t_process *procesos, int process_num)
-{
 
-}*/
+
+int	middle_childs(t_macro_pipex *common, t_process *procesos, int process_num)
+{
+	char	*path;
+	int		status;
+	int		i;
+	int		aux_num;
+	int		j;
+
+	i = 0;
+	j = 0;
+	aux_num = process_num;
+	while (process_num--)
+	{
+		procesos->last_heredoc = do_heredocs(procesos);
+		(common->childs)[i] = fork();
+		if ((common->childs)[i] == 0)
+		{
+			procesos->last_inf = check_infiles(procesos);
+			if (procesos->last_inf == -2)
+				exit(1);
+			procesos->last_out = check_outfiles(procesos);
+			if (procesos->last_inf == -1 && process_num != aux_num - 1)
+				dup2((common->pipes)[0][0], STDIN_FILENO); //cambiar el 0 por j
+			else if (procesos->last_inf != -1)
+			{
+				dup2(procesos->last_inf, STDIN_FILENO);
+				close(procesos->last_inf);
+			}
+			if (procesos->last_out == -1 && process_num != 0)
+				dup2((common->pipes)[0][1], STDOUT_FILENO); //cambiar el 0 por (j - 1)
+			else if (procesos->last_out != -1)
+			{
+				dup2(procesos->last_out, STDOUT_FILENO);
+				close(procesos->last_out);
+			}
+			close_pipes(common, aux_num);
+			path = find_path(*(common->c_env), procesos->command);
+			ejecutar(*(common->c_env), path, procesos->command);
+			exit(127);
+		}
+		procesos = procesos->next;
+		i++;
+		j++;
+	}
+	close_pipes(common, aux_num);
+	//cerrar todos heredocs
+	i = 0;
+	while (i <= aux_num)
+	{
+		waitpid((common->childs)[i], &status, 0);
+		i++;
+	}
+	return (status);
+}
+
+int	exe_procesos(t_process *procesos, int process_num, char ***copy_env)
+{
+	t_macro_pipex	*common;
+	int				status;
+
+	common = ini_macro_pipex(process_num, copy_env);
+	status = middle_childs(common, procesos, process_num);
+	return (status);
+}
 
 int	main(int argc, char *argv[], char *env[])
 {
@@ -193,7 +255,7 @@ int	main(int argc, char *argv[], char *env[])
 				}
 				else
 				{
-					//exe_procesos(procesos, process_num);
+					status = exe_procesos(procesos, process_num, &copy_env);
 				}
 			}
 		}

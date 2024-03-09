@@ -18,9 +18,10 @@ int	**create_pipes(int quant)
 
 	if (quant == 0)
 		return (NULL);
-	pipes = malloc(quant * sizeof(int *));
+	pipes = malloc((quant + 1) * sizeof(int *));
 	if (!pipes)
 		perror("Minishell");
+	pipes[quant] = NULL;
 	while (quant--)
 	{
 		pipes[quant] = malloc(2);

@@ -30,7 +30,7 @@ int	check_infiles(t_process *process)
 			current_fd = open(current->filename, O_RDONLY);
 			if (current_fd == -1)
 			{
-				perror("Error");
+				printf("Error: No such file or directory: %s\n", current->filename);
 				return (-2);
 			}
 			else
