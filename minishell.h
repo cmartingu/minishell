@@ -47,13 +47,6 @@ typedef struct s_process
 	struct s_process	*next;
 }						t_process;
 
-typedef struct s_last_file
-{
-	char		*filename;
-	int			heredoc;
-	int			fd;
-}	t_last_file;
-
 typedef struct s_pipex
 {
 	char	**c_env;
@@ -62,6 +55,12 @@ typedef struct s_pipex
 	int		last_out;
 	int		last_inf;
 }	t_pipex;
+
+typedef struct s_micro_pipex
+{
+	int		last_inf;
+	int		last_out;
+}	t_micro_pipex;
 
 typedef struct s_auxiliar
 {
@@ -130,13 +129,13 @@ void	ejecutar(char *envp[], char *path, char **comando);
 char	*path_access(char **possible_paths, char **full_command, char *comand);
 char	*find_path(char *envp[], char **comand);
 int		**create_pipes(int quant);
-void	close_pipes(t_pipex *pipexx);
+void	close_pipes(t_pipex *pipexx, int process_num);
 
 int		check_infiles(t_process *process);
 int		process_outfile(t_fileobject *current);
 int		check_outfiles(t_process *process);
 int		last_heredoc(t_fileobject *file);
-void	do_heredocs(t_process *proceso);
+char	*do_heredocs(t_process *proceso);
 int		one_process_exe(t_pipex *ejecutor, t_process *procesos);
 void	one_process_b(t_pipex *ejecutor, t_process *procesos);
 

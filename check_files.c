@@ -107,18 +107,23 @@ int	last_heredoc(t_fileobject *file)
 	return (1);
 }
 
-void	do_heredocs(t_process *proceso)
+char	*do_heredocs(t_process *proceso)
 {
+	char			*file;
 	t_fileobject	*aux;
 	char			*here;
 	int				aux_fd;
 
 	aux = proceso->infile;
+	file = NULL;
 	while (aux != NULL)
 	{
 		if (aux->heredoc == 1)
 		{
 			aux_fd = open(aux->filename, O_RDWR | O_CREAT | O_TRUNC, 0666);
+			if (file)
+				free(file);
+			file = ft_strdup(aux->filename);
 			here = get_next_line(0);
 			while (1)
 			{
@@ -136,4 +141,5 @@ void	do_heredocs(t_process *proceso)
 		}
 		aux = aux->next;
 	}
+	return (file);
 }

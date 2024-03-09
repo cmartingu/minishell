@@ -74,18 +74,18 @@ int	decide_fork(t_process *process)
 		return (1);
 }
 
-/*void	close_pipes(t_pipex *pipexx)
+void	close_pipes(t_pipex *pipexx, int process_num)
 {
 	int	i;
 
 	i = 0;
-	while (i < )
+	while (i < (process_num - 1))
 	{
 		close((pipexx->pipes)[i][0]);
 		close((pipexx->pipes)[i][1]);
 		i++;
 	}
-}*/
+}
 
 t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
 {
@@ -113,8 +113,8 @@ int	main(int argc, char *argv[], char *env[])
 	t_process	*procesos;
 	t_pipex		*ejecutor;
 	char		**copy_env;
+	char		*lst_here;
 	int			process_num;
-	//char		*path;
 	int			status;
 
 	argc = 0;
@@ -159,18 +159,21 @@ int	main(int argc, char *argv[], char *env[])
 				process_num = count_process(procesos);
 				if (process_num ==  1)
 				{
-
-					do_heredocs(procesos);
+					lst_here = do_heredocs(procesos);
 					ejecutor = ini_pipex(process_num, copy_env, procesos);
 					if (decide_fork(procesos) == 1)
 						status = one_process_exe(ejecutor, procesos);
 					else
 						one_process_b(ejecutor, procesos);
+					if (lst_here != NULL)
+					{
+						unlink(lst_here);
+						free(lst_here);
+					}
 				}
-				/*else//Varios procesos
+				else
 				{
-					ejecutor = ini_pipex(process_num, copy_env);
-				}*/
+				}
 			}
 		}
 	}
