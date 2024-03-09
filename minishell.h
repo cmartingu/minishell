@@ -132,4 +132,12 @@ char	*find_path(char *envp[], char **comand);
 int		**create_pipes(int quant);
 void	close_pipes(t_pipex *pipexx);
 
+int		check_infiles(t_process *process);
+int		process_outfile(t_fileobject *current);
+int		check_outfiles(t_process *process);
+int		last_heredoc(t_fileobject *file);
+void	do_heredocs(t_process *proceso);
+int		one_process_exe(t_pipex *ejecutor, t_process *procesos);
+void	one_process_b(t_pipex *ejecutor, t_process *procesos);
+
 #endif

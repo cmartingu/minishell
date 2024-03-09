@@ -12,57 +12,6 @@
 
 #include "minishell.h"
 
-/*void	print_fileobject_list(t_fileobject *fileobject)
-{
-	while (fileobject != NULL)
-	{
-		printf("\tFilename: %s		Flag: %d\n", fileobject->filename, fileobject->heredoc);
-		fileobject = fileobject->next;
-	}
-}
-
-void	print_process_list(t_process *process)
-{
-	int	command_index;
-
-	while (process != NULL)
-	{
-		printf("Command:\n");
-		if (process->command != NULL)
-		{
-			command_index = 0;
-			while (process->command[command_index] != NULL)
-			{
-				printf("\t%s\n", process->command[command_index]);
-				command_index++;
-			}
-		}
-		printf("Input Files:\n");
-		if (process->infile)
-		{
-			print_fileobject_list(process->infile);
-		}
-		else
-		{
-			printf("\tNone\n");
-		}
-		printf("Output Files:\n");
-		if (process->outfile)
-		{
-			print_fileobject_list(process->outfile);
-		}
-		else
-		{
-			printf("\tNone\n");
-		}
-		process = process->next;
-		if (process != NULL)
-		{
-			printf("---- Next Process ----\n");
-		}
-	}
-}*/
-
 t_process	*tokenization_string(char *cmd, char **copy_env)
 {
 	t_process		*process;
@@ -125,134 +74,18 @@ int	decide_fork(t_process *process)
 		return (1);
 }
 
-int	last_heredoc(t_fileobject *file)
+/*void	close_pipes(t_pipex *pipexx)
 {
-	t_fileobject	*aux;
+	int	i;
 
-	aux = file;
-	aux = aux->next;
-	while (aux != NULL)
+	i = 0;
+	while (i < )
 	{
-		if (aux->heredoc == 1)
-			return (0);
-		aux = aux->next;
+		close((pipexx->pipes)[i][0]);
+		close((pipexx->pipes)[i][1]);
+		i++;
 	}
-	return (1);
-}
-
-void	do_heredocs(t_process *proceso)
-{
-	t_fileobject	*aux;
-	char			*here;
-	int				aux_fd;
-
-	aux = proceso->infile;
-	while (aux != NULL)
-	{
-		if (aux->heredoc == 1)
-		{
-			aux_fd = open(aux->filename, O_RDWR | O_CREAT | O_TRUNC, 0666);
-			here = get_next_line(0);
-			while (1)
-			{
-				if (ft_strncmp(ft_strjoin(aux->filename, "\n"), here, \
-				ft_strlen(aux->filename) + 1) == 0)
-					break ;
-				write(aux_fd, here, ft_strlen(here));
-				free(here);
-				here = get_next_line(0);
-			}
-			free(here);
-			if (last_heredoc(aux) == 0)
-				unlink(aux->filename);
-			close(aux_fd);
-		}
-		aux = aux->next;
-	}
-}
-
-
-
-int	check_infiles(t_process *process)
-{
-	t_fileobject	*current;
-	int				current_fd;
-	int				last_fd;
-
-	current_fd = -1;
-	last_fd = -1;
-	if (!process || !process->infile)
-		return (-1);
-	current = process->infile;
-	while (current != NULL)
-	{
-		if (current->heredoc == 0 || ((current->heredoc == 1) && last_heredoc(current) == 1))
-		{
-			current_fd = open(current->filename, O_RDONLY);
-			if (current_fd == -1)
-			{
-				perror("Error al abrir el infile");
-				exit(1);
-			}
-			else
-			{
-				if (last_fd != -1)
-					close(last_fd);
-				last_fd = current_fd;
-			}
-		}
-		current = current->next;
-	}
-	return (last_fd);
-}
-
-int	process_outfile(t_fileobject *current)
-{
-	int	current_fd;
-
-	current_fd = -1;
-	if (current->heredoc == 1)
-		current_fd = open(current->filename, O_WRONLY \
-	| O_CREAT | O_APPEND, 0666);
-	else
-		current_fd = open(current->filename, O_WRONLY \
-	| O_CREAT | O_TRUNC, 0666);
-	if (current_fd == -1)
-	{
-		perror("Error al abrir/crear el archivo");
-		exit(1);
-	}
-	return (current_fd);
-}
-
-int	check_outfiles(t_process *process)
-{
-	t_fileobject	*current;
-	int				current_fd;
-	int				fd;
-	int				is_last;
-
-	fd = -1;
-	current = process->outfile;
-	is_last = 0;
-	current_fd = -1;
-	if (!process || !process->outfile)
-		return (-1);
-	while (current != NULL)
-	{
-		if (current->next == NULL)
-			is_last = 1;
-		else
-			is_last = 0;
-		current_fd = process_outfile(current);
-		if (is_last == 1)
-			fd = current_fd;
-		else if (current_fd != -1)
-			close(current_fd);
-		current = current->next;
-	}
-	return (fd);
-}
+}*/
 
 t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
 {
@@ -266,8 +99,11 @@ t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
 	if (!pipexx->childs)
 		perror("Minishell");
 	pipexx->c_env = envp;
-	pipexx->last_out = check_outfiles(proceso); //ponerlo como -1;
-	pipexx->last_inf = check_infiles(proceso); //ponerlo como -1;
+	pipexx->last_inf = check_infiles(proceso);
+	if (pipexx->last_inf != -2)
+		pipexx->last_out = check_outfiles(proceso);
+	else
+		pipexx->last_out = -1;
 	return (pipexx);
 }
 
@@ -278,11 +114,8 @@ int	main(int argc, char *argv[], char *env[])
 	t_pipex		*ejecutor;
 	char		**copy_env;
 	int			process_num;
-	char		*path;
+	//char		*path;
 	int			status;
-	int			original_stdin;
-	int			original_stdout;
-	//int			salida_std;
 
 	argc = 0;
 	argv = NULL;
@@ -320,12 +153,6 @@ int	main(int argc, char *argv[], char *env[])
 			add_history(comando);
 			if (strncmp(comando, "history -c", strlen(comando)) == 0)
 				rl_clear_history();
-			/*else if (strncmp(comando, "exit", 4) == 0)
-			{
-				printf("exit\n");
-				//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
-				exit(0);
-			}*/
 			else
 			{
 				procesos = tokenization_string(comando, copy_env);
@@ -336,53 +163,13 @@ int	main(int argc, char *argv[], char *env[])
 					do_heredocs(procesos);
 					ejecutor = ini_pipex(process_num, copy_env, procesos);
 					if (decide_fork(procesos) == 1)
-					{
-						ejecutor->childs[0] = fork();
-						if (ejecutor->childs[0] == 0)
-						{
-							if (ejecutor->last_inf != -1)
-								dup2(ejecutor->last_inf, STDIN_FILENO);
-							if (ejecutor->last_out != -1)
-								dup2(ejecutor->last_out, STDOUT_FILENO);
-							path = find_path(ejecutor->c_env, procesos->command);
-							ejecutar(ejecutor->c_env, path, procesos->command);
-						}
-						waitpid(ejecutor->childs[0], &status, 0);
-						
-					}
+						status = one_process_exe(ejecutor, procesos);
 					else
-					{
-						if (ejecutor->last_inf != -1)
-						{
-							original_stdin = dup(STDIN_FILENO);
-							dup2(ejecutor->last_inf, STDIN_FILENO);
-						}
-						if (ejecutor->last_out != -1)
-						{
-							original_stdout = dup(STDOUT_FILENO);
-							dup2(ejecutor->last_out, STDOUT_FILENO);
-						}
-						if (strncmp(procesos->command[0], "export", ft_strlen(procesos->command[0])) == 0)
-							do_export(procesos->command, ejecutor->c_env);
-						else if (strncmp(procesos->command[0], "echo", ft_strlen(procesos->command[0])) == 0)
-							do_echo(procesos->command);
-						else if (strncmp(procesos->command[0], "pwd", ft_strlen(procesos->command[0])) == 0)
-							do_pwd();
-						else if (strncmp(procesos->command[0], "cd", ft_strlen(procesos->command[0])) == 0)
-							do_cd(procesos->command, ejecutor->c_env);
-						else if (strncmp(procesos->command[0], "unset", ft_strlen(procesos->command[0])) == 0)
-							do_unset(procesos->command, ejecutor->c_env);
-						else if (strncmp(procesos->command[0], "env", ft_strlen(procesos->command[0])) == 0)
-							do_env(ejecutor->c_env);
-						else if (strncmp(procesos->command[0], "exit", ft_strlen(procesos->command[0])) == 0)
-							do_exit(procesos->command);
-						dup2(original_stdin, STDIN_FILENO);
-						dup2(original_stdout, STDOUT_FILENO);
-					}
+						one_process_b(ejecutor, procesos);
 				}
-				/*else
+				/*else//Varios procesos
 				{
-					ejecutor = ini_pipex(process_num, copy_env);//Fork para cada proceso. 
+					ejecutor = ini_pipex(process_num, copy_env);
 				}*/
 			}
 		}

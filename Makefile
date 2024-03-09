@@ -32,6 +32,9 @@ SRC =	parseo/ctrl_handlers.c	\
 		executor/pipex.c	\
 		get_next_line/get_next_line.c	\
 		get_next_line/get_next_line_utils.c	\
+		check_files.c	\
+		one_process.c	\
+		printea_procesos.c	\
 		minishell.c
 OBJ = $(SRC:.c=.o)
 CFLAGS := -Wall -Werror -Wextra
