@@ -49,17 +49,24 @@ typedef struct s_process
 
 typedef struct s_pipex
 {
-	char	**c_env;
+	char	***c_env;
 	int		**pipes;
 	int		*childs;
 	int		last_out;
 	int		last_inf;
 }	t_pipex;
 
+typedef struct s_macro_pipex
+{
+	char	**c_env;
+	int		**pipes;
+	int		*childs;
+}	t_macro_pipex;
+
 typedef struct s_micro_pipex
 {
-	int		last_inf;
-	int		last_out;
+	int				last_inf;
+	int				last_out;
 }	t_micro_pipex;
 
 typedef struct s_auxiliar
@@ -118,10 +125,10 @@ void	do_echo(char **command);
 void	do_env(char **env);
 void	do_exit(char **comando);
 void	free_array(char **arr);
-char	**insert_str(char **old, char *str);
+void	insert_str(char ***copy_env, char *str);
 char	**copy_array(char **old);
 int		check_export(const char *str);
-char	**do_export(char **comando, char **copyEnv);
+void	do_export(char **comando, char ***copyEnv);
 void	do_pwd(void);
 void	do_unset(char **command, char **env);
 
@@ -138,5 +145,6 @@ int		last_heredoc(t_fileobject *file);
 char	*do_heredocs(t_process *proceso);
 int		one_process_exe(t_pipex *ejecutor, t_process *procesos);
 void	one_process_b(t_pipex *ejecutor, t_process *procesos);
+void printarr(char **arr);
 
 #endif

@@ -87,7 +87,7 @@ void	close_pipes(t_pipex *pipexx, int process_num)
 	}
 }
 
-t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
+t_pipex	*ini_pipex(int process_num, char ***envp, t_process *proceso)
 {
 	t_pipex	*pipexx;
 
@@ -106,6 +106,26 @@ t_pipex	*ini_pipex(int process_num, char **envp, t_process *proceso)
 		pipexx->last_out = -1;
 	return (pipexx);
 }
+
+/*t_macro_pipex	*ini_macro_pipex(t_process *procesos, int process_num, char **envp)
+{
+	t_macro_pipex	*pipexx;
+
+	pipexx = malloc(sizeof(t_macro_pipex));
+	if (!pipexx)
+		perror("Minishell");
+	pipexx->pipes = create_pipes(process_num - 1);
+	pipexx->childs = malloc(process_num * sizeof(int));
+	if (!pipexx->childs)
+		perror("Minishell");
+	pipexx->c_env = envp;
+	return ();
+}
+
+void	exe_procesos(t_process *procesos, int process_num)
+{
+
+}*/
 
 int	main(int argc, char *argv[], char *env[])
 {
@@ -160,7 +180,7 @@ int	main(int argc, char *argv[], char *env[])
 				if (process_num ==  1)
 				{
 					lst_here = do_heredocs(procesos);
-					ejecutor = ini_pipex(process_num, copy_env, procesos);
+					ejecutor = ini_pipex(process_num, &copy_env, procesos);
 					if (decide_fork(procesos) == 1)
 						status = one_process_exe(ejecutor, procesos);
 					else
@@ -173,6 +193,7 @@ int	main(int argc, char *argv[], char *env[])
 				}
 				else
 				{
+					//exe_procesos(procesos, process_num);
 				}
 			}
 		}

@@ -14,9 +14,12 @@
 
 void	do_env(char **env)
 {
-	while (*env != NULL)
+	int	i;
+
+	i = 0;
+	while (env[i] != NULL)
 	{
-		printf("%s\n", *env);
-		env++;
+		printf("%s\n", env[i]);
+		i++;
 	}
 }

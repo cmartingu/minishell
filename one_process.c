@@ -36,11 +36,11 @@ void	one_process_b(t_pipex *ejecutor, t_process *procesos)
 	else if (strncmp(procesos->command[0], "pwd", ft_strlen(procesos->command[0])) == 0)
 		do_pwd();
 	else if (strncmp(procesos->command[0], "cd", ft_strlen(procesos->command[0])) == 0)
-		do_cd(procesos->command, ejecutor->c_env);
+		do_cd(procesos->command, *(ejecutor->c_env));
 	else if (strncmp(procesos->command[0], "unset", ft_strlen(procesos->command[0])) == 0)
-		do_unset(procesos->command, ejecutor->c_env);
+		do_unset(procesos->command, *(ejecutor->c_env));
 	else if (strncmp(procesos->command[0], "env", ft_strlen(procesos->command[0])) == 0)
-		do_env(ejecutor->c_env);
+		do_env(*(ejecutor->c_env));
 	else if (strncmp(procesos->command[0], "exit", ft_strlen(procesos->command[0])) == 0)
 		do_exit(procesos->command);
 	if (ejecutor->last_inf != -1)
@@ -63,8 +63,8 @@ int	one_process_exe(t_pipex *ejecutor, t_process *procesos)
 			dup2(ejecutor->last_inf, STDIN_FILENO);
 		if (ejecutor->last_out != -1)
 			dup2(ejecutor->last_out, STDOUT_FILENO);
-		path = find_path(ejecutor->c_env, procesos->command);
-		ejecutar(ejecutor->c_env, path, procesos->command);
+		path = find_path(*(ejecutor->c_env), procesos->command);
+		ejecutar(*(ejecutor->c_env), path, procesos->command);
 	}
 	waitpid(ejecutor->childs[0], &status, 0);
 	return (status);
