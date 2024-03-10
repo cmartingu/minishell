@@ -145,6 +145,8 @@ t_process *proceso);
 int				decide_fork(t_process *process);
 int				exe_procesos(t_process *procesos, int process_num, \
 char ***copy_env);
+void			do_various_builtins(t_process *procesos, \
+t_macro_pipex *ejecutor);
 
 int				check_infiles(t_process *process);
 int				process_outfile(t_fileobject *current);

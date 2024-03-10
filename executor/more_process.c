@@ -68,6 +68,11 @@ int j, int aux_num)
 
 	dup_process(aux_procesos, common, j, aux_num);
 	close_pipes(common, common->num_process);
+	if (decide_fork(aux_procesos) == 0)
+	{
+		do_various_builtins(aux_procesos, common);
+		exit(0);
+	}
 	path = find_path(*(common->c_env), aux_procesos->command);
 	ejecutar(*(common->c_env), path, aux_procesos->command);
 	exit(127);
