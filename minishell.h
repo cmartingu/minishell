@@ -64,6 +64,7 @@ typedef struct s_macro_pipex
 	char	***c_env;
 	int		**pipes;
 	int		*childs;
+	int		num_process;
 }	t_macro_pipex;
 
 typedef struct s_auxiliar

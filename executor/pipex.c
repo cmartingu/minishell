@@ -65,6 +65,7 @@ t_macro_pipex	*ini_macro_pipex(int process_num, char ***envp)
 	pipexx->childs = malloc(process_num * sizeof(int));
 	if (!pipexx->childs)
 		perror("Minishell");
+	pipexx->num_process = process_num;
 	pipexx->c_env = envp;
 	return (pipexx);
 }

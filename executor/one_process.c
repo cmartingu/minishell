@@ -37,6 +37,33 @@ void	do_builtins(t_process *procesos, t_pipex *ejecutor)
 		do_exit(procesos->command);
 }
 
+int	decide_fork(t_process *process)
+{
+	if (strncmp(process->command[0], "export", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "echo", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "pwd", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "cd", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "unset", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "env", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else if (strncmp(process->command[0], "exit", \
+	ft_strlen(process->command[0])) == 0)
+		return (0);
+	else
+		return (1);
+}
+
 void	one_process_b(t_pipex *ejecutor, t_process *procesos)
 {
 	int	original_stdin;
