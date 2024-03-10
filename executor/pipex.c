@@ -34,87 +34,50 @@ int	**create_pipes(int quant)
 	return (pipes);
 }
 
-/*void	close_pipes(t_pipex *pipexx)
+t_pipex	*ini_pipex(int process_num, char ***envp, t_process *proceso)
+{
+	t_pipex	*pipexx;
+
+	pipexx = malloc(sizeof(t_pipex));
+	if (!pipexx)
+		perror("Minishell");
+	pipexx->pipes = create_pipes(process_num - 1);
+	pipexx->childs = malloc(process_num * sizeof(int));
+	if (!pipexx->childs)
+		perror("Minishell");
+	pipexx->c_env = envp;
+	pipexx->last_inf = check_infiles(proceso);
+	if (pipexx->last_inf != -2)
+		pipexx->last_out = check_outfiles(proceso);
+	else
+		pipexx->last_out = -1;
+	return (pipexx);
+}
+
+t_macro_pipex	*ini_macro_pipex(int process_num, char ***envp)
+{
+	t_macro_pipex	*pipexx;
+
+	pipexx = malloc(sizeof(t_macro_pipex));
+	if (!pipexx)
+		perror("Minishell");
+	pipexx->pipes = create_pipes(process_num - 1);
+	pipexx->childs = malloc(process_num * sizeof(int));
+	if (!pipexx->childs)
+		perror("Minishell");
+	pipexx->c_env = envp;
+	return (pipexx);
+}
+
+void	close_pipes(t_macro_pipex *pipexx, int process_num)
 {
 	int	i;
 
 	i = 0;
-	while (i < pipexx->tam)
+	while (i < (process_num - 1))
 	{
 		close((pipexx->pipes)[i][0]);
 		close((pipexx->pipes)[i][1]);
 		i++;
 	}
 }
-
-void	middle_childs(t_pipex *pipexx)
-{
-	char	*path;
-	int		aux_arg;
-	int		i;
-	int		j;
-
-	i = 3;
-	j = 1;
-	aux_arg = pipexx->argc;
-	while (aux_arg > 5)
-	{
-		aux_arg--;
-		(pipexx->childs)[j] = fork();
-		if ((pipexx->childs)[j] == 0)
-		{
-			dup2((pipexx->pipes)[aux_arg - 4][0], STDIN_FILENO);
-			dup2((pipexx->pipes)[aux_arg - 5][1], STDOUT_FILENO);
-			close_pipes(pipexx);
-			path = find_path(pipexx->env, (pipexx->argv)[i]);
-			ejecutar(pipexx->env, path, (pipexx->argv)[i]);
-			exit(127);
-		}
-		i++;
-		j++;
-	}
-}
-
-t_pipex	*ini_pipex(int arg, char **envp, char **argvv)
-{
-	t_pipex	*pipexx;
-
-	pipexx = malloc(sizeof(t_pipex));
-	pipexx = malloc(sizeof(t_pipex));
-	pipexx->tam = arg - 4;
-	pipexx->pipes = create_pipes(pipexx->tam);
-	pipexx->env = envp;
-	pipexx->argc = arg;
-	pipexx->argv = argvv;
-	pipexx->childs = malloc((arg - 3) * sizeof(int));
-	return (pipexx);
-}
-
-int	main(int arg, char *argvv[], char *envp[])
-{
-	int		status;
-	int		i;
-	t_pipex	*pipexx;
-
-	if (arg < 5)
-	{
-		write(1, "Error, you have to put at least 2 commands\n", 43);
-		exit(1);
-	}
-	pipexx = ini_pipex(arg, envp, argvv);
-	(pipexx->childs)[0] = fork();
-	if ((pipexx->childs)[0] == 0)
-		first_process(pipexx);
-	middle_childs(pipexx);
-	(pipexx->childs)[pipexx->tam] = fork();
-	if ((pipexx->childs)[arg - 4] == 0)
-		last_process(pipexx);
-	close_pipes(pipexx);
-	i = 0;
-	while (i <= pipexx->tam)
-	{
-		waitpid((pipexx->childs)[i], &status, 0);
-		i++;
-	}
-	return (WEXITSTATUS(status));
-}*/

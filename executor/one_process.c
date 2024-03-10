@@ -10,7 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
+
+void	do_builtins(t_process *procesos, t_pipex *ejecutor)
+{
+	if (strncmp(procesos->command[0], "export", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_export(procesos->command, ejecutor->c_env);
+	else if (strncmp(procesos->command[0], "echo", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_echo(procesos->command);
+	else if (strncmp(procesos->command[0], "pwd", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_pwd();
+	else if (strncmp(procesos->command[0], "cd", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_cd(procesos->command, *(ejecutor->c_env));
+	else if (strncmp(procesos->command[0], "unset", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_unset(procesos->command, ejecutor->c_env);
+	else if (strncmp(procesos->command[0], "env", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_env(*(ejecutor->c_env));
+	else if (strncmp(procesos->command[0], "exit", \
+	ft_strlen(procesos->command[0])) == 0)
+		do_exit(procesos->command);
+}
 
 void	one_process_b(t_pipex *ejecutor, t_process *procesos)
 {
@@ -29,20 +54,7 @@ void	one_process_b(t_pipex *ejecutor, t_process *procesos)
 		original_stdout = dup(STDOUT_FILENO);
 		dup2(ejecutor->last_out, STDOUT_FILENO);
 	}
-	if (strncmp(procesos->command[0], "export", ft_strlen(procesos->command[0])) == 0)
-		do_export(procesos->command, ejecutor->c_env);
-	else if (strncmp(procesos->command[0], "echo", ft_strlen(procesos->command[0])) == 0)
-		do_echo(procesos->command);
-	else if (strncmp(procesos->command[0], "pwd", ft_strlen(procesos->command[0])) == 0)
-		do_pwd();
-	else if (strncmp(procesos->command[0], "cd", ft_strlen(procesos->command[0])) == 0)
-		do_cd(procesos->command, *(ejecutor->c_env));
-	else if (strncmp(procesos->command[0], "unset", ft_strlen(procesos->command[0])) == 0)
-		do_unset(procesos->command, ejecutor->c_env);
-	else if (strncmp(procesos->command[0], "env", ft_strlen(procesos->command[0])) == 0)
-		do_env(*(ejecutor->c_env));
-	else if (strncmp(procesos->command[0], "exit", ft_strlen(procesos->command[0])) == 0)
-		do_exit(procesos->command);
+	do_builtins(procesos, ejecutor);
 	if (ejecutor->last_inf != -1)
 		dup2(original_stdin, STDIN_FILENO);
 	if (ejecutor->last_out != -1)

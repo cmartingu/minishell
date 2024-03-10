@@ -40,3 +40,44 @@ void	ft_realloc_doble(t_process *proceso, char *str, int tam)
 	free_arr(&(proceso->command));
 	proceso->command = final_cmd;
 }
+
+t_process	*tokenization_string(char *cmd, char **copy_env)
+{
+	t_process		*process;
+	t_process		*aux_process;
+	char			**tokens;
+	int				tam;
+	int				forks;
+
+	if (contador_comillas(cmd) == -1)
+	{
+		printf("Minishell error: Acuerdate de cerrar las comillas\n");
+		exit(1);
+	}
+	tam = token_quant(cmd);
+	tokens = save_tokens(tam, &cmd);
+	forks = pipes_quant(tokens) + 1;
+	process = procesos(forks, tokens);
+	aux_process = process;
+	while (aux_process != NULL)
+	{
+		delete_all_quot(aux_process, copy_env);
+		aux_process = aux_process->next;
+	}
+	return (process);
+}
+
+int	count_process(t_process *procesos)
+{
+	t_process	*aux;
+	int			i;
+
+	aux = procesos;
+	i = 0;
+	while (aux != NULL)
+	{
+		aux = aux->next;
+		i++;
+	}
+	return (i);
+}

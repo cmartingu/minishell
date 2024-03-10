@@ -16,12 +16,13 @@ void	print_fileobject_list(t_fileobject *fileobject)
 {
 	while (fileobject != NULL)
 	{
-		printf("\tFilename: %s		Flag: %d\n", fileobject->filename, fileobject->heredoc);
+		printf("\tFilename: %s		Flag: %d\n", \
+		fileobject->filename, fileobject->heredoc);
 		fileobject = fileobject->next;
 	}
 }
 
-void	print_process_list(t_process *process)
+/*void	print_process_list(t_process *process)
 {
 	int	command_index;
 
@@ -61,4 +62,4 @@ void	print_process_list(t_process *process)
 			printf("---- Next Process ----\n");
 		}
 	}
-}
+}*/

@@ -3,12 +3,6 @@
 	- FALTA comprobar que no da errores gramaticales (Ej: <>).
 	- FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
 
+2. Cerrar todos los heredocs en varios procesos
 
-3. Tener ejecutor hecho.
-	- FALTA TODO.
-		- Comprobar infiles y outfiles para redirigir entradas y salidas.
-
-4. Tener builtins hechos.
-	- Meter en cd "~/Downloads"
-
-5. Probar tonterias a manejar. 
+3. Probar tonterias a manejar. 

@@ -31,12 +31,13 @@ SRC =	parseo/ctrl_handlers.c	\
 		executor/ejecutar.c	\
 		executor/path.c	\
 		executor/pipex.c	\
+		executor/one_process.c	\
+		executor/more_process.c	\
 		checkfiles/check_outfiles.c\
 		checkfiles/check_infiles.c \
 		checkfiles/check_heredocs.c \
 		get_next_line/get_next_line.c	\
 		get_next_line/get_next_line_utils.c	\
-		one_process.c	\
 		printea_procesos.c	\
 		minishell.c
 OBJ = $(SRC:.c=.o)
