@@ -12,6 +12,26 @@
 
 #include "../minishell.h"
 
+void	print_echo(int n_all, char **command)
+{
+	int	i;
+
+	i = 1;
+	if (n_all)
+		i = 2;
+	while (command[i] != NULL)
+	{
+		printf("%s", command[i]);
+		if (command[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (!n_all)
+		printf("\n");
+	else
+		printf("%%\n");
+}
+
 void	do_echo(char **command)
 {
 	int	i;
@@ -35,14 +55,5 @@ void	do_echo(char **command)
 	}
 	else
 		n_all = 0;
-	if (n_all)
-		i = 1;
-	while (command[i++])
-	{
-		printf("%s", command[i]);
-		if (command[i + 1])
-			printf(" ");
-	}
-	if (!n_all)
-		printf("\n");
+	print_echo(n_all, command);
 }

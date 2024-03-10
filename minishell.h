@@ -117,31 +117,32 @@ t_process	*procesos(int nb, char **tokens);
 extern void	rl_clear_history(void);
 extern void	rl_replace_line(const char *b, int s);
 
-void	do_cd(char **command, char **copyEnv);
-void	do_echo(char **command);
-void	do_env(char **env);
-void	do_exit(char **comando);
-void	free_array(char **arr);
-void	insert_str(char ***copy_env, char *str);
-char	**copy_array(char **old);
-int		check_export(const char *str);
-void	do_export(char **comando, char ***copyEnv);
-void	do_pwd(void);
-void	do_unset(char **command, char **env);
+void		do_cd(char **command, char **copyEnv);
+void		do_echo(char **command);
+void		do_env(char **copyenv);
+void		do_exit(char **comando);
+void		free_array(char **arr);
+void		insert_str(char ***copy_env, char *str);
+char		**copy_array(char **old);
+int			check_export(const char *str);
+void		do_export(char **comando, char ***copyEnv);
+void		do_pwd(void);
+void		do_unset(char **coman, char ***copyenv);
 
-void	ejecutar(char *envp[], char *path, char **comando);
-char	*path_access(char **possible_paths, char **full_command, char *comand);
-char	*find_path(char *envp[], char **comand);
-int		**create_pipes(int quant);
-void	close_pipes(t_macro_pipex *pipexx, int process_num);
+void		ejecutar(char *envp[], char *path, char **comando);
+char		*path_access(char **possible_paths, char **full_command, \
+char *comand);
+char		*find_path(char *envp[], char **comand);
+int			**create_pipes(int quant);
+void		close_pipes(t_macro_pipex *pipexx, int process_num);
 
-int		check_infiles(t_process *process);
-int		process_outfile(t_fileobject *current);
-int		check_outfiles(t_process *process);
-int		last_heredoc(t_fileobject *file);
-char	*do_heredocs(t_process *proceso);
-int		one_process_exe(t_pipex *ejecutor, t_process *procesos);
-void	one_process_b(t_pipex *ejecutor, t_process *procesos);
-void printarr(char **arr);
+int			check_infiles(t_process *process);
+int			process_outfile(t_fileobject *current);
+int			check_outfiles(t_process *process);
+int			last_heredoc(t_fileobject *file);
+char		*do_heredocs(t_process *proceso);
+int			one_process_exe(t_pipex *ejecutor, t_process *procesos);
+void		one_process_b(t_pipex *ejecutor, t_process *procesos);
+void		printarr(char **arr);
 
 #endif

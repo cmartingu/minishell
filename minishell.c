@@ -56,19 +56,26 @@ int	count_process(t_process *procesos)
 
 int	decide_fork(t_process *process)
 {
-	if (strncmp(process->command[0], "export", ft_strlen(process->command[0])) == 0)
+	if (strncmp(process->command[0], "export", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
-	else if (strncmp(process->command[0], "echo", ft_strlen(process->command[0])) == 0)
+	else if (strncmp(process->command[0], "echo", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
-	else if (strncmp(process->command[0], "pwd", ft_strlen(process->command[0])) == 0)
+	else if (strncmp(process->command[0], "pwd", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
-	else if (strncmp(process->command[0], "cd", ft_strlen(process->command[0])) == 0)
+	else if (strncmp(process->command[0], "cd", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
-	else if (strncmp(process->command[0], "unset", ft_strlen(process->command[0])) == 0)
+	else if (strncmp(process->command[0], "unset", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
-	else if (strncmp(process->command[0], "env", ft_strlen(process->command[0])) == 0)
+	else if (strncmp(process->command[0], "env", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
-	else if (strncmp(process->command[0], "exit", ft_strlen(process->command[0])) == 0)
+	else if (strncmp(process->command[0], "exit", \
+	ft_strlen(process->command[0])) == 0)
 		return (0);
 	else
 		return (1);

@@ -12,14 +12,14 @@
 
 #include "../minishell.h"
 
-void	do_env(char **env)
+void	do_env(char **copyenv)
 {
 	int	i;
 
 	i = 0;
-	while (env[i] != NULL)
+	while (copyenv[i] != NULL)
 	{
-		printf("%s\n", env[i]);
+		printf("%s\n", copyenv[i]);
 		i++;
 	}
 }

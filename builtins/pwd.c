@@ -12,6 +12,19 @@
 
 #include "../minishell.h"
 
+void	free_array(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
 void	do_pwd(void)
 {
 	char	*buf;

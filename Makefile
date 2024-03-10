@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 NAME = minishell
+UNAME_S := $(USER)
 SRC =	parseo/ctrl_handlers.c	\
 		parseo/funciones_aux.c	\
 		parseo/token_save.c	\
@@ -30,16 +31,18 @@ SRC =	parseo/ctrl_handlers.c	\
 		executor/ejecutar.c	\
 		executor/path.c	\
 		executor/pipex.c	\
+		checkfiles/check_outfiles.c\
+		checkfiles/check_infiles.c \
+		checkfiles/check_heredocs.c \
 		get_next_line/get_next_line.c	\
 		get_next_line/get_next_line_utils.c	\
-		check_files.c	\
 		one_process.c	\
 		printea_procesos.c	\
 		minishell.c
 OBJ = $(SRC:.c=.o)
 CFLAGS := -Wall -Werror -Wextra
-LDFLAGS := -L/Users/carlos-m/.brew/opt/readline/lib
-LDLIBS := -I/Users/carlos-m/.brew/opt/readline/include -lreadline
+LDFLAGS := -L/Users/$(UNAME_S)/.brew/opt/readline/lib
+LDLIBS := -I/Users/$(UNAME_S)/.brew/opt/readline/include -lreadline
 REMOVE = rm -f
 CC := cc
 #ESTO COMPILA BIEN MIGUEL: cc pruebas.c -o tu_programa -I/Users/mllamas-/.brew/include -L/Users/mllamas-/.brew/lib -lreadline

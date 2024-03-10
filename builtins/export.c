@@ -12,21 +12,6 @@
 
 #include "../minishell.h"
 
-
-void	free_array(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i] != NULL)
-	{
-		free(arr[i]);
-		i++;
-	}
-	//free(arr);
-}
-
-
 char	**copy_array(char **old)
 {
 	int		len;
@@ -69,18 +54,6 @@ int	check_export(const char *str)
 		return (0);
 	return (2);
 }
-void printarr(char **arr)
-{
-	int i;
-
-	i = 0;
-	while(arr[i] != NULL)
-	{
-		printf("%s\n", arr[i]);
-		i++;
-	}
-	printf("\n");
-}
 
 void	insert_str(char ***copy_env, char *str)
 {
@@ -103,7 +76,6 @@ void	insert_str(char ***copy_env, char *str)
 	new[i] = ft_strdup(str);
 	new[i + 1] = NULL;
 	free_array((*copy_env));
-	free(*copy_env);
 	(*copy_env) = new;
 }
 
@@ -111,14 +83,11 @@ void	do_export(char **comando, char ***copyEnv)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	if (comando[1] == NULL)
 	{
-		while ((*copyEnv)[i] != NULL)
-		{
+		while ((*copyEnv)[i++] != NULL)
 			printf("declare -x %s\n", (*copyEnv)[i]);
-			i++;
-		}
 	}
 	else
 	{

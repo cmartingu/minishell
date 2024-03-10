@@ -38,7 +38,7 @@ void	one_process_b(t_pipex *ejecutor, t_process *procesos)
 	else if (strncmp(procesos->command[0], "cd", ft_strlen(procesos->command[0])) == 0)
 		do_cd(procesos->command, *(ejecutor->c_env));
 	else if (strncmp(procesos->command[0], "unset", ft_strlen(procesos->command[0])) == 0)
-		do_unset(procesos->command, *(ejecutor->c_env));
+		do_unset(procesos->command, ejecutor->c_env);
 	else if (strncmp(procesos->command[0], "env", ft_strlen(procesos->command[0])) == 0)
 		do_env(*(ejecutor->c_env));
 	else if (strncmp(procesos->command[0], "exit", ft_strlen(procesos->command[0])) == 0)

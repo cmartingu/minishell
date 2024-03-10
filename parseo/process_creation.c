@@ -12,6 +12,50 @@
 
 #include "../minishell.h"
 
+void	add_file_condition(t_process *proceso, char **tok, int *i, int type)
+{
+	if (*(tok[*i]) != '<' && *(tok[*i]) != '>' && *(tok[*i]) != '|')
+	{
+		if (type == 0 || type == 1)
+			add_outfile(proceso, tok[*i], type);
+		else if (type == 2 || type == 3)
+			add_infile(proceso, tok[*i], type - 2);
+	}
+}
+
+void	add_command_condition(t_process *proceso, char **tok, int *i, int *qua)
+{
+	(*qua)++;
+	add_cmd(proceso, tok[*i], *qua);
+}
+
+void	create_process(t_process *proceso, char **tok, int *i, int *qua)
+{
+	if (ft_strncmp(tok[*i], ">", ft_strlen(tok[*i])) == 0)
+	{
+		(*i)++;
+		add_file_condition(proceso, tok, i, 0);
+	}
+	else if (ft_strncmp(tok[*i], "<", ft_strlen(tok[*i])) == 0)
+	{
+		(*i)++;
+		add_file_condition(proceso, tok, i, 2);
+	}
+	else if (ft_strncmp(tok[*i], ">>", ft_strlen(tok[*i])) == 0)
+	{
+		(*i)++;
+		add_file_condition(proceso, tok, i, 1);
+	}
+	else if (ft_strncmp(tok[*i], "<<", ft_strlen(tok[*i])) == 0)
+	{
+		(*i)++;
+		add_file_condition(proceso, tok, i, 3);
+	}
+	else
+		add_command_condition(proceso, tok, i, qua);
+	(*i)++;
+}
+/*
 void	create_process(t_process *proceso, char **tok, int *i, int *qua)
 {
 	if (ft_strncmp(tok[*i], ">", ft_strlen(tok[*i])) == 0)
@@ -45,6 +89,7 @@ void	create_process(t_process *proceso, char **tok, int *i, int *qua)
 	}
 	(*i)++;
 }
+*/
 
 t_process	*procesos(int nb, char **tokens)
 {
