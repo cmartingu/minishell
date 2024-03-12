@@ -67,6 +67,20 @@ void	expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env)
 	free(aux->name_var);
 }
 
+int	question_tam(int status, int *i)
+{
+	int	j;
+
+	j = 1;
+	(*i)++;
+	while (status >= 10)
+	{
+		j++;
+		status = status / 10;
+	}
+	return (j);
+}
+
 int	add_expansion(char *cmd, int *i, char **copy_env)
 {
 	char	*name_var;
@@ -75,6 +89,8 @@ int	add_expansion(char *cmd, int *i, char **copy_env)
 
 	(*i)++;
 	aux = *i;
+	//if (cmd[*i] == '?')
+	//	return (question_tam(status) - 2); Añadir status
 	while (cmd[*i] != '\0' && cmd[*i] != '"' && cmd[*i] != ' ' \
 	&& cmd[*i] != '$')
 		(*i)++;

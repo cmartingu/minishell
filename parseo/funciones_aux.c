@@ -50,8 +50,8 @@ int	gramatical_errors(char **tokens)
 	{
 		if (tokens[i][0] == '<' || tokens[i][0] == '>')
 		{
-			if (tokens[i + 1] == NULL || tokens[i + 1][0] == '<' || tokens[i + 1][0] == '>' \
-			|| tokens[i + 1][0] == '|')
+			if (tokens[i + 1] == NULL || tokens[i + 1][0] == '<' \
+			|| tokens[i + 1][0] == '>' || tokens[i + 1][0] == '|')
 			{
 				free_array(tokens);
 				return (-1);

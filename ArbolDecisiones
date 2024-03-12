@@ -1,7 +1,6 @@
 
-1. Tener el parseo hecho.
-	- FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
+1. FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
 
-2. Probar tonterias a manejar.
+2. Echo $?
 
-3. Echo $?
+3. Probar tonterias a manejar.
