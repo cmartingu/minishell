@@ -1,6 +1,7 @@
 
 1. Tener el parseo hecho.
-	- FALTA comprobar que no da errores gramaticales (Ej: <>).
 	- FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
 
 2. Probar tonterias a manejar.
+
+3. Echo $?

@@ -50,8 +50,8 @@ int	gramatical_errors(char **tokens)
 	{
 		if (tokens[i][0] == '<' || tokens[i][0] == '>')
 		{
-			if (tokens[i + 1][0] == '<' || tokens[i + 1][0] == '>' \
-			|| tokens[i + 1][0] == '|' || tokens[i + 1] == NULL)
+			if (tokens[i + 1] == NULL || tokens[i + 1][0] == '<' || tokens[i + 1][0] == '>' \
+			|| tokens[i + 1][0] == '|')
 			{
 				free_array(tokens);
 				return (-1);
@@ -84,6 +84,8 @@ t_process	*tokenization_string(char *cmd, char **copy_env)
 		exit(1);
 	}
 	tam = token_quant(cmd);
+	if (tam == 0)
+		return (NULL);
 	tokens = save_tokens(tam, &cmd);
 	if (gramatical_errors(tokens) == -1)
 		return (NULL);

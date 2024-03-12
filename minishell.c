@@ -12,6 +12,20 @@
 
 #include "minishell.h"
 
+int	all_spaces(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] != ' ')
+			return (-1);
+		i++;
+	}
+	return (1);
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
 	char		*comando;
@@ -62,7 +76,10 @@ int	main(int argc, char *argv[], char *env[])
 			{
 				procesos = tokenization_string(comando, copy_env);
 				if (procesos == NULL)
-					printf("Error: syntax error\n");
+				{
+					if (all_spaces(comando) == -1)
+						printf("Error: syntax error\n");
+				}
 				else
 				{
 					process_num = count_process(procesos);
