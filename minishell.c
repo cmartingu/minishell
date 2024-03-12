@@ -61,24 +61,29 @@ int	main(int argc, char *argv[], char *env[])
 			else
 			{
 				procesos = tokenization_string(comando, copy_env);
-				process_num = count_process(procesos);
-				if (process_num == 1)
-				{
-					lst_here = do_heredocs(procesos);
-					ejecutor = ini_pipex(process_num, &copy_env, procesos);
-					if (decide_fork(procesos) == 1)
-						status = one_process_exe(ejecutor, procesos);
-					else
-						one_process_b(ejecutor, procesos);
-					if (lst_here != NULL)
-					{
-						unlink(lst_here);
-						free(lst_here);
-					}
-				}
+				if (procesos == NULL)
+					printf("Error: syntax error\n");
 				else
 				{
-					status = exe_procesos(procesos, process_num, &copy_env);
+					process_num = count_process(procesos);
+					if (process_num == 1)
+					{
+						lst_here = do_heredocs(procesos);
+						ejecutor = ini_pipex(process_num, &copy_env, procesos);
+						if (decide_fork(procesos) == 1)
+							status = one_process_exe(ejecutor, procesos);
+						else
+							one_process_b(ejecutor, procesos);
+						if (lst_here != NULL)
+						{
+							unlink(lst_here);
+							free(lst_here);
+						}
+					}
+					else
+					{
+						status = exe_procesos(procesos, process_num, &copy_env);
+					}
 				}
 			}
 		}
