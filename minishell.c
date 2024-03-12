@@ -79,7 +79,10 @@ int	main(int argc, char *argv[], char *env[])
 				if (procesos == NULL)
 				{
 					if (all_spaces(comando) == -1)
+					{
 						printf("Error: syntax error\n");
+						status = 258;
+					}
 				}
 				else
 				{
