@@ -70,7 +70,7 @@ int	gramatical_errors(char **tokens)
 	return (1);
 }
 
-t_process	*tokenization_string(char *cmd, char **copy_env)
+t_process	*tokenization_string(char *cmd, char **copy_env, int status)
 {
 	t_process	*process;
 	t_process	*aux_process;
@@ -94,7 +94,7 @@ t_process	*tokenization_string(char *cmd, char **copy_env)
 	aux_process = process;
 	while (aux_process != NULL)
 	{
-		delete_all_quot(aux_process, copy_env);
+		delete_all_quot(aux_process, copy_env, status);
 		aux_process = aux_process->next;
 	}
 	return (process);

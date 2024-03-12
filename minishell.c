@@ -37,6 +37,7 @@ int	main(int argc, char *argv[], char *env[])
 	int			status;
 
 	argc = 0;
+	status = 0;
 	argv = NULL;
 	copy_env = copy_array(env);
 	/*struct termios termios_p;
@@ -74,7 +75,7 @@ int	main(int argc, char *argv[], char *env[])
 				rl_clear_history();
 			else
 			{
-				procesos = tokenization_string(comando, copy_env);
+				procesos = tokenization_string(comando, copy_env, status);
 				if (procesos == NULL)
 				{
 					if (all_spaces(comando) == -1)
@@ -90,7 +91,7 @@ int	main(int argc, char *argv[], char *env[])
 						if (decide_fork(procesos) == 1)
 							status = one_process_exe(ejecutor, procesos);
 						else
-							one_process_b(ejecutor, procesos);
+							status = one_process_b(ejecutor, procesos);
 						if (lst_here != NULL)
 						{
 							unlink(lst_here);

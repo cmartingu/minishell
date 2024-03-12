@@ -71,6 +71,7 @@ typedef struct s_auxiliar
 {
 	int					i;
 	int					j;
+	int					status;
 	char				*name_var;
 }						t_auxiliar;
 
@@ -79,22 +80,21 @@ int				ft_strncmp(const char *s1, const char *s2, size_t n);
 int				token_quant(char *cmd);
 int				pipes_quant(char **tokens);
 int				has_quot(char *cmd);
-int				no_quot_tam(char *cmd, char **copy_env);
-int				add_expansion(char *cmd, int *i, char **copy_env);
+int				no_quot_tam(char *cmd, char **copy_env, int status);
+int				add_expansion(char *cmd, int *i, char **copy_env, int status);
 int				enviroment_sustitution(char *name_var, char **copy_env, \
 int *iter, int cant_iter);
 int				end_quotation(char **cmd, char quot);
 int				contador_comillas(char *comando);
-int				add_expansion(char *cmd, int *i, char **copy_env);
 int				enviroment_sustitution(char *name_var, char **copy_env, \
 int *iter, int cant_iter);
 char			*ft_strdup(const char *s1);
 char			**save_tokens(int tam, char **cmd);
 char			*next_token(char **cmd);
 char			*save_word_case(char **cmd);
-char			*final_command(char *cmd, int tam, char **copy_env);
+char			*final_command(char *cmd, int tam, char **copy_env, int status);
 char			*skip_places(int i, char **cmd);
-void			command_quot(char *cmd, char **aux, char **copy_env);
+void			command_quot(char *cmd, char **aux, char **copy_env, int status);
 void			quant_aux(char **cmd, int *quant, int *i);
 void			ctrl_C_handler(int sig);
 void			ctrl_bar_handler(int sig);
@@ -104,8 +104,8 @@ void			add_infile(t_process *proceso, char *inf, int flag);
 void			add_outfile(t_process *proceso, char *outf, int flag);
 void			add_cmd(t_process *proceso, char *cmd, int cmd_quant);
 void			free_arr(char ***arr);
-void			delete_quotation(char **cmd, char **copy_env);
-void			delete_all_quot(t_process *process, char **copy_env);
+void			delete_quotation(char **cmd, char **copy_env, int status);
+void			delete_all_quot(t_process *process, char **copy_env, int status);
 void			count_quotation(char **cmd, int *i, char quot);
 void			expansion_print(char *cmd, t_auxiliar *aux, \
 char **final, char **cp_env);
@@ -114,7 +114,7 @@ char *name_var);
 void			create_process(t_process *proceso, char **tok, int *i, \
 int *qua);
 void			save_final_quot(char **aux, char *cmd, int *i, int *j);
-t_process		*tokenization_string(char *cmd, char **copy_env);
+t_process		*tokenization_string(char *cmd, char **copy_env, int status);
 void			char_exc(char **cmd, int *quant, int *i);
 t_process		*procesos(int nb, char **tokens);
 int				count_process(t_process *procesos);
@@ -154,7 +154,7 @@ int				check_outfiles(t_process *process);
 int				last_heredoc(t_fileobject *file);
 char			*do_heredocs(t_process *proceso);
 int				one_process_exe(t_pipex *ejecutor, t_process *procesos);
-void			one_process_b(t_pipex *ejecutor, t_process *procesos);
+int				one_process_b(t_pipex *ejecutor, t_process *procesos);
 void			printarr(char **arr);
 
 #endif

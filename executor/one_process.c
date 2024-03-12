@@ -64,13 +64,13 @@ int	decide_fork(t_process *process)
 		return (1);
 }
 
-void	one_process_b(t_pipex *ejecutor, t_process *procesos)
+int	one_process_b(t_pipex *ejecutor, t_process *procesos)
 {
 	int	original_stdin;
 	int	original_stdout;
 
 	if (ejecutor->last_inf == -2)
-		return ;
+		return (1);
 	if (ejecutor->last_inf != -1)
 	{
 		original_stdin = dup(STDIN_FILENO);
@@ -86,6 +86,7 @@ void	one_process_b(t_pipex *ejecutor, t_process *procesos)
 		dup2(original_stdin, STDIN_FILENO);
 	if (ejecutor->last_out != -1)
 		dup2(original_stdout, STDOUT_FILENO);
+	return (0);
 }
 
 int	one_process_exe(t_pipex *ejecutor, t_process *procesos)
@@ -106,5 +107,5 @@ int	one_process_exe(t_pipex *ejecutor, t_process *procesos)
 		ejecutar(*(ejecutor->c_env), path, procesos->command);
 	}
 	waitpid(ejecutor->childs[0], &status, 0);
-	return (status);
+	return (WEXITSTATUS(status));
 }

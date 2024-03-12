@@ -60,6 +60,8 @@ char	*ft_itoa(int n)
 
 	nb = n;
 	signo = 1;
+	if (n == 0)
+		return (ft_strdup("0"));
 	if (nb < 0)
 	{
 		signo = -1;

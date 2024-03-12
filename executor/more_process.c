@@ -109,5 +109,5 @@ int	exe_procesos(t_process *procesos, int process_num, char ***copy_env)
 
 	common = ini_macro_pipex(process_num, copy_env);
 	status = middle_childs(common, procesos);
-	return (status);
+	return (WEXITSTATUS(status));
 }

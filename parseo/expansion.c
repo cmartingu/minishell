@@ -41,12 +41,31 @@ void	save_expansion(char **aux, int *j, char **cp_env, char *name_var)
 	}
 }
 
+void	save_status(t_auxiliar *aux, char **final)
+{
+	char	*stat;
+	int		aux_iter;
+
+	(aux->i)++;
+	stat = ft_itoa(aux->status);
+	aux_iter = 0;
+	while (stat[aux_iter] != '\0')
+	{
+		(*final)[aux->j] = stat[aux_iter];
+		aux_iter++;
+		(aux->j)++;
+	}
+	free(stat);
+}
+
 void	expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env)
 {
 	int		auxiliar;
 	int		quit_chars;
 
 	(aux->i)++;
+	if (cmd[(aux->i)] == '?')
+		return (save_status(aux, final));//guardar status
 	auxiliar = (aux->i);
 	while (cmd[(aux->i)] != '\0' && cmd[(aux->i)] != '"' && \
 	cmd[(aux->i)] != ' ' && cmd[(aux->i)] != '$')
@@ -81,7 +100,7 @@ int	question_tam(int status, int *i)
 	return (j);
 }
 
-int	add_expansion(char *cmd, int *i, char **copy_env)
+int	add_expansion(char *cmd, int *i, char **copy_env, int status)
 {
 	char	*name_var;
 	int		aux;
@@ -89,8 +108,8 @@ int	add_expansion(char *cmd, int *i, char **copy_env)
 
 	(*i)++;
 	aux = *i;
-	//if (cmd[*i] == '?')
-	//	return (question_tam(status) - 2); Añadir status
+	if (cmd[*i] == '?')
+		return (question_tam(status, i) - 2);
 	while (cmd[*i] != '\0' && cmd[*i] != '"' && cmd[*i] != ' ' \
 	&& cmd[*i] != '$')
 		(*i)++;
