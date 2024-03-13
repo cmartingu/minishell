@@ -102,9 +102,7 @@ int	main(int argc, char *argv[], char *env[])
 						}
 					}
 					else
-					{
 						status = exe_procesos(procesos, process_num, &copy_env);
-					}
 				}
 			}
 		}

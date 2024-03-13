@@ -28,47 +28,48 @@ int	has_quot(char *cmd)
 	return (-1);
 }
 
-void	no_quot_tam_aux(char *cmd, int *i, int *quant, char **copy_env, int status)
+void	no_quot_tam_aux(char *cmd, t_auxiliar *aux, char **copy_env, int stats)
 {
-	if (cmd[*i] == '$')
-		(*quant) -= add_expansion(cmd, i, copy_env, status);
-	else if (cmd[*i] == '\'')
+	if (cmd[aux->i] == '$')
+		(aux->status) -= add_expansion(cmd, &(aux->i), copy_env, stats);
+	else if (cmd[aux->i] == '\'')
 	{
-		(*i)++;
-		(*quant) += 2;
-		while (cmd[*i] != '\'')
-			(*i)++;
-		(*i)++;
+		(aux->i)++;
+		(aux->status) += 2;
+		while (cmd[aux->i] != '\'')
+			(aux->i)++;
+		(aux->i)++;
 	}
-	else if (cmd[*i] == '"')
+	else if (cmd[aux->i] == '"')
 	{
-		(*i)++;
-		(*quant) += 2;
-		while (cmd[*i] != '"')
+		(aux->i)++;
+		(aux->status) += 2;
+		while (cmd[aux->i] != '"')
 		{
-			if (cmd[*i] == '$')
-				(*quant) -= add_expansion(cmd, i, copy_env, status);
+			if (cmd[aux->i] == '$')
+				(aux->status) -= add_expansion(cmd, &(aux->i), copy_env, stats);
 			else
-				(*i)++;
+				(aux->i)++;
 		}
-		(*i)++;
+		(aux->i)++;
 	}
 	else
-		(*i)++;
+		(aux->i)++;
 }
 
-int	no_quot_tam(char *cmd, char **copy_env, int status)
+int	no_quot_tam(char *cmd, char **copy_env, int stats)
 {
-	int	i;
-	int	quant;
+	t_auxiliar	*aux;
+	int			p;
 
-	i = 0;
-	quant = 0;
-	while (cmd[i] != '\0')
-	{
-		no_quot_tam_aux(cmd, &i, &quant, copy_env, status);
-	}
-	return (i - quant);
+	aux = malloc(sizeof(t_auxiliar));
+	aux->i = 0;
+	aux->status = 0;
+	while (cmd[aux->i] != '\0')
+		no_quot_tam_aux(cmd, aux, copy_env, stats);
+	p = (aux->i) - (aux->status);
+	free(aux);
+	return (p);
 }
 
 void	aux_command_quot(char *cmd, int *i, int *j, char **aux)
@@ -94,10 +95,7 @@ void	command_quot(char *cmd, char **final, char **copy_env, int status)
 {
 	t_auxiliar	*aux;
 
-	aux = malloc(sizeof(t_auxiliar));
-	aux->j = 0;
-	aux->i = 0;
-	aux->status = status;
+	aux = ini_aux(status);
 	while (cmd[aux->i] != '\0')
 	{
 		if (cmd[aux->i] == '$')

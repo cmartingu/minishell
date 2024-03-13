@@ -79,10 +79,7 @@ t_process	*tokenization_string(char *cmd, char **copy_env, int status)
 	int			forks;
 
 	if (contador_comillas(cmd) == -1)
-	{
-		printf("Minishell error: Acuerdate de cerrar las comillas\n");
-		exit(1);
-	}
+		return (NULL);
 	tam = token_quant(cmd);
 	if (tam == 0)
 		return (NULL);

@@ -94,7 +94,8 @@ char			*next_token(char **cmd);
 char			*save_word_case(char **cmd);
 char			*final_command(char *cmd, int tam, char **copy_env, int status);
 char			*skip_places(int i, char **cmd);
-void			command_quot(char *cmd, char **aux, char **copy_env, int status);
+void			command_quot(char *cmd, char **aux, char **copy_env, \
+int status);
 void			quant_aux(char **cmd, int *quant, int *i);
 void			ctrl_C_handler(int sig);
 void			ctrl_bar_handler(int sig);
@@ -105,7 +106,8 @@ void			add_outfile(t_process *proceso, char *outf, int flag);
 void			add_cmd(t_process *proceso, char *cmd, int cmd_quant);
 void			free_arr(char ***arr);
 void			delete_quotation(char **cmd, char **copy_env, int status);
-void			delete_all_quot(t_process *process, char **copy_env, int status);
+void			delete_all_quot(t_process *process, char **copy_env, \
+int status);
 void			count_quotation(char **cmd, int *i, char quot);
 void			expansion_print(char *cmd, t_auxiliar *aux, \
 char **final, char **cp_env);
@@ -147,6 +149,9 @@ int				exe_procesos(t_process *procesos, int process_num, \
 char ***copy_env);
 void			do_various_builtins(t_process *procesos, \
 t_macro_pipex *ejecutor);
+void			save_status(t_auxiliar *aux, char **final);
+int				question_tam(int status, int *i);
+t_auxiliar		*ini_aux(int status);
 
 int				check_infiles(t_process *process);
 int				process_outfile(t_fileobject *current);

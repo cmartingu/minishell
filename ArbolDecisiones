@@ -1,6 +1,3 @@
-
 1. FALTA METER FUNCION EXIT CON LO DE (TCSETATTR)
 
-2. Echo $?
-
-3. Probar tonterias a manejar.
+2. Si quitan env hay que setear algo

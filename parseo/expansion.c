@@ -41,23 +41,6 @@ void	save_expansion(char **aux, int *j, char **cp_env, char *name_var)
 	}
 }
 
-void	save_status(t_auxiliar *aux, char **final)
-{
-	char	*stat;
-	int		aux_iter;
-
-	(aux->i)++;
-	stat = ft_itoa(aux->status);
-	aux_iter = 0;
-	while (stat[aux_iter] != '\0')
-	{
-		(*final)[aux->j] = stat[aux_iter];
-		aux_iter++;
-		(aux->j)++;
-	}
-	free(stat);
-}
-
 void	expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env)
 {
 	int		auxiliar;
@@ -65,7 +48,7 @@ void	expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env)
 
 	(aux->i)++;
 	if (cmd[(aux->i)] == '?')
-		return (save_status(aux, final));//guardar status
+		return (save_status(aux, final));
 	auxiliar = (aux->i);
 	while (cmd[(aux->i)] != '\0' && cmd[(aux->i)] != '"' && \
 	cmd[(aux->i)] != ' ' && cmd[(aux->i)] != '$')
@@ -84,20 +67,6 @@ void	expansion_print(char *cmd, t_auxiliar *aux, char **final, char **cp_env)
 		(aux->i)++;
 	save_expansion(final, &(aux->j), cp_env, aux->name_var);
 	free(aux->name_var);
-}
-
-int	question_tam(int status, int *i)
-{
-	int	j;
-
-	j = 1;
-	(*i)++;
-	while (status >= 10)
-	{
-		j++;
-		status = status / 10;
-	}
-	return (j);
 }
 
 int	add_expansion(char *cmd, int *i, char **copy_env, int status)

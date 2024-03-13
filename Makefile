@@ -16,6 +16,7 @@ SRC =	parseo/ctrl_handlers.c	\
 		parseo/funciones_aux.c	\
 		parseo/token_save.c	\
 		parseo/add_process.c	\
+		parseo/status.c	\
 		parseo/quotation_delete_aux.c	\
 		parseo/token_quantification.c	\
 		parseo/process_creation.c	\
