@@ -28,43 +28,22 @@ int	all_spaces(char *str)
 
 int	main(int argc, char *argv[], char *env[])
 {
-	char		*comando;
-	t_process	*procesos;
-	t_pipex		*ejecutor;
-	char		**copy_env;
-	char		*lst_here;
-	int			process_num;
-	int			status;
+	char			*comando;
+	t_process		*procesos;
+	t_pipex			*ejecutor;
+	char			**copy_env;
+	char			*lst_here;
+	int				status;
 
 	argc = 0;
 	status = 0;
 	argv = NULL;
+	g_sig_handler = 0;
 	copy_env = copy_array(env);
-	/*struct termios termios_p;
-	struct termios termios_orig;
-
-	tcgetattr(STDIN_FILENO, &termios_p);
-	 Guardar la configuración original para poder restaurarla más tarde
-	termios_orig = termios_p;
-	
-	 Modificar la configuración para que CTRL+C ^C no se muestre en el terminal
-	termios_p.c_lflag &= ~(ECHOCTL);
-	
-	 Aplicar la nueva configuración
-	tcsetattr(STDIN_FILENO, TCSANOW, &termios_p);
-
-	if (signal(SIGINT, ctrl_c_handler) == SIG_ERR) {
-		printf("Error al establecer el manejador de SIGINT\n");
-		tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
-		return EXIT_FAILURE;
-	}
-	if (signal(SIGQUIT, ctrl_bar_handler) == SIG_ERR) {
-		printf("Error al establecer el manejador de SIGINT\n");
-		tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
-		return EXIT_FAILURE;
-	}*/
 	while (1)
 	{
+		if (ini_signals() == -1)
+			return (EXIT_FAILURE);
 		comando = readline("minishell>");
 		if (!comando)
 			exit(EXIT_SUCCESS);
@@ -86,15 +65,17 @@ int	main(int argc, char *argv[], char *env[])
 				}
 				else
 				{
-					process_num = count_process(procesos);
-					if (process_num == 1)
+					if (count_process(procesos) == 1)
 					{
 						lst_here = do_heredocs(procesos);
-						ejecutor = ini_pipex(process_num, &copy_env, procesos);
-						if (decide_fork(procesos) == 1)
-							status = one_process_exe(ejecutor, procesos);
-						else
-							status = one_process_b(ejecutor, procesos);
+						if (g_sig_handler != -1)
+						{
+							ejecutor = ini_pipex(count_process(procesos), &copy_env, procesos);
+							if (decide_fork(procesos) == 1)
+								status = one_process_exe(ejecutor, procesos);
+							else
+								status = one_process_b(ejecutor, procesos);
+						}
 						if (lst_here != NULL)
 						{
 							unlink(lst_here);
@@ -102,11 +83,10 @@ int	main(int argc, char *argv[], char *env[])
 						}
 					}
 					else
-						status = exe_procesos(procesos, process_num, &copy_env);
+						status = exe_procesos(procesos, count_process(procesos), &copy_env);
 				}
 			}
 		}
 	}
-	//tcsetattr(STDIN_FILENO, TCSANOW, &termios_orig);
 	return (0);
 }

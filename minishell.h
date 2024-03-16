@@ -75,6 +75,8 @@ typedef struct s_auxiliar
 	char				*name_var;
 }						t_auxiliar;
 
+int				g_sig_handler;
+
 size_t			ft_strlen(const char *s);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 int				token_quant(char *cmd);
@@ -97,8 +99,9 @@ char			*skip_places(int i, char **cmd);
 void			command_quot(char *cmd, char **aux, char **copy_env, \
 int status);
 void			quant_aux(char **cmd, int *quant, int *i);
-void			ctrl_C_handler(int sig);
+void			ctrl_c_handler(int sig);
 void			ctrl_bar_handler(int sig);
+int				ini_signals(void);
 void			add_process_back(t_process *proceso, t_process *proceso2);
 void			ft_realloc_doble(t_process *proceso, char *str, int tam);
 void			add_infile(t_process *proceso, char *inf, int flag);
