@@ -164,5 +164,8 @@ char			*do_heredocs(t_process *proceso);
 int				one_process_exe(t_pipex *ejecutor, t_process *procesos);
 int				one_process_b(t_pipex *ejecutor, t_process *procesos);
 void			printarr(char **arr);
+int				middle_childs(t_macro_pipex *common, t_process *procesos);
+int				all_spaces(char *str);
+int				aux_close_hd(t_process *procesos);
 
 #endif

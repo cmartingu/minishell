@@ -12,27 +12,58 @@
 
 #include "minishell.h"
 
-int	all_spaces(char *str)
+int	process_execution(t_process *procesos, char ***copy_env)
 {
-	int	i;
+	t_pipex	*ejecutor;
+	int		status;
 
-	i = 0;
-	while (str[i] != '\0')
+	if (count_process(procesos) == 1)
 	{
-		if (str[i] != ' ')
-			return (-1);
-		i++;
+		procesos->last_heredoc = do_heredocs(procesos);
+		if (g_sig_handler != -1)
+		{
+			ejecutor = ini_pipex(count_process(procesos), copy_env, procesos);
+			if (decide_fork(procesos) == 1)
+				status = (one_process_exe(ejecutor, procesos));
+			else
+				status = one_process_b(ejecutor, procesos);
+		}
+		else
+			status = 1;
+		aux_close_hd(procesos);
 	}
-	return (1);
+	else
+		status = exe_procesos(procesos, count_process(procesos), copy_env);
+	return (status);
+}
+
+void	has_cmd(char *comando, char ***copy_env, int *status)
+{
+	t_process		*procesos;
+
+	add_history(comando);
+	if (strncmp(comando, "history -c", strlen(comando)) == 0)
+		rl_clear_history();
+	else
+	{
+		procesos = tokenization_string(comando, *copy_env, *status);
+		if (procesos == NULL)
+		{
+			if (all_spaces(comando) == -1)
+			{
+				printf("Error: syntax error\n");
+				*status = 258;
+			}
+		}
+		else
+			*status = process_execution(procesos, copy_env);
+	}
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
 	char			*comando;
-	t_process		*procesos;
-	t_pipex			*ejecutor;
 	char			**copy_env;
-	char			*lst_here;
 	int				status;
 
 	argc = 0;
@@ -48,45 +79,7 @@ int	main(int argc, char *argv[], char *env[])
 		if (!comando)
 			exit(EXIT_SUCCESS);
 		if (*comando)
-		{
-			add_history(comando);
-			if (strncmp(comando, "history -c", strlen(comando)) == 0)
-				rl_clear_history();
-			else
-			{
-				procesos = tokenization_string(comando, copy_env, status);
-				if (procesos == NULL)
-				{
-					if (all_spaces(comando) == -1)
-					{
-						printf("Error: syntax error\n");
-						status = 258;
-					}
-				}
-				else
-				{
-					if (count_process(procesos) == 1)
-					{
-						lst_here = do_heredocs(procesos);
-						if (g_sig_handler != -1)
-						{
-							ejecutor = ini_pipex(count_process(procesos), &copy_env, procesos);
-							if (decide_fork(procesos) == 1)
-								status = one_process_exe(ejecutor, procesos);
-							else
-								status = one_process_b(ejecutor, procesos);
-						}
-						if (lst_here != NULL)
-						{
-							unlink(lst_here);
-							free(lst_here);
-						}
-					}
-					else
-						status = exe_procesos(procesos, count_process(procesos), &copy_env);
-				}
-			}
-		}
+			has_cmd(comando, &copy_env, &status);
 	}
 	return (0);
 }

@@ -12,6 +12,20 @@
 
 #include "../minishell.h"
 
+int	all_spaces(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] != ' ')
+			return (-1);
+		i++;
+	}
+	return (1);
+}
+
 char	*skip_places(int i, char **cmd)
 {
 	char	*aux_tkn;

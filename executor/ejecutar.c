@@ -43,3 +43,13 @@ void	do_various_builtins(t_process *procesos, t_macro_pipex *ejecutor)
 	ft_strlen(procesos->command[0])) == 0)
 		do_exit(procesos->command);
 }
+
+int	exe_procesos(t_process *procesos, int process_num, char ***copy_env)
+{
+	t_macro_pipex	*common;
+	int				status;
+
+	common = ini_macro_pipex(process_num, copy_env);
+	status = middle_childs(common, procesos);
+	return (WEXITSTATUS(status));
+}

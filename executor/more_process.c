@@ -78,6 +78,23 @@ int j, int aux_num)
 	exit(127);
 }
 
+int	aux_close_hd(t_process *procesos)
+{
+	t_process	*aux_procesos;
+
+	aux_procesos = procesos;
+	while (aux_procesos != NULL)
+	{
+		if (aux_procesos->last_heredoc != NULL)
+		{
+			unlink(aux_procesos->last_heredoc);
+			free(aux_procesos->last_heredoc);
+		}
+		aux_procesos = aux_procesos->next;
+	}
+	return (1);
+}
+
 int	middle_childs(t_macro_pipex *common, t_process *procesos)
 {
 	t_process	*aux_procesos;
@@ -92,6 +109,8 @@ int	middle_childs(t_macro_pipex *common, t_process *procesos)
 	while (aux_num--)
 	{
 		aux_procesos->last_heredoc = do_heredocs(aux_procesos);
+		if (g_sig_handler == -1)
+			return (aux_close_hd(procesos));
 		(common->childs)[i] = fork();
 		if ((common->childs)[i] == 0)
 			do_childs(aux_procesos, common, j, aux_num);
@@ -100,14 +119,4 @@ int	middle_childs(t_macro_pipex *common, t_process *procesos)
 		j++;
 	}
 	return (wait_close_heredoc(common, procesos));
-}
-
-int	exe_procesos(t_process *procesos, int process_num, char ***copy_env)
-{
-	t_macro_pipex	*common;
-	int				status;
-
-	common = ini_macro_pipex(process_num, copy_env);
-	status = middle_childs(common, procesos);
-	return (WEXITSTATUS(status));
 }
