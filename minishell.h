@@ -75,7 +75,7 @@ typedef struct s_auxiliar
 	char				*name_var;
 }						t_auxiliar;
 
-int				g_sig_handler;
+extern int		g_sig_handler;
 
 size_t			ft_strlen(const char *s);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);

@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int g_sig_handler = 0;
+
 int	process_execution(t_process *procesos, char ***copy_env)
 {
 	t_pipex	*ejecutor;
@@ -69,7 +71,6 @@ int	main(int argc, char *argv[], char *env[])
 	argc = 0;
 	status = 0;
 	argv = NULL;
-	g_sig_handler = 0;
 	copy_env = copy_array(env);
 	while (1)
 	{
