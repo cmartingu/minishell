@@ -34,11 +34,9 @@ void	print_echo(int n_all, char **command)
 
 void	do_echo(char **command)
 {
-	int	i;
 	int	n_all;
 	int	j;
 
-	i = 0;
 	n_all = 1;
 	j = 1;
 	if (command[1] && command[1][0] == '-')

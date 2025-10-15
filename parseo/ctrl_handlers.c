@@ -28,7 +28,7 @@ void	ctrl_c_handler(int sig)
 
 void	ctrl_bar_handler(int sig)
 {
-	sig = 0;
+	(void) sig;
 	return ;
 }
 

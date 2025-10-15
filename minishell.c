@@ -68,9 +68,9 @@ int	main(int argc, char *argv[], char *env[])
 	char			**copy_env;
 	int				status;
 
-	argc = 0;
+	(void) argc;
 	status = 0;
-	argv = NULL;
+	(void) argv;
 	copy_env = copy_array(env);
 	while (1)
 	{
